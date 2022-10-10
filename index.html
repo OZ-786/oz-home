@@ -1,0 +1,279 @@
+<html>
+<style>body { background-color: #fff; font-family: Arial; Color: black;}</style>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8">
+<meta name="theme-color" content="#031b26" />
+<meta name="robots" content="noindex">
+	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-16x16.png"/>
+	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-96x96.png"/>
+	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-32x32.png"/>
+	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-160x160.png"/>
+	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-192x192.png"/>
+<title>MySmartHome</title>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	var lastUpdtTime;
+	var d;
+	var alertDone = false;
+$(document).ready(function() {
+	getUpdates();
+	// check for new updates
+	setInterval('getUpdates()',10000);
+
+	setInterval('liveTimerUpdtFun()',10000);
+});
+
+function getUpdates() {
+	// get the data with a webservice call
+	$("#entry_id").css('color', '#f44b4b');
+
+	$.getJSON('https://api.thingspeak.com/channels/1599196/feeds/last', function(data) {
+
+			// if the field1 has data update the page
+
+			d = new Date(data.created_at);
+
+	$("#created_at").html(d.toDateString() + " " + d.toLocaleTimeString()).css("fontSize", 15);
+	$("#entry_id").html(data.entry_id).css("fontSize", 15);
+
+		if (data.field1!=null){
+     $("#field1").html(data.field1).css("fontSize", 15);
+	}
+	else{
+	$("#field1").html("OFFLINE").css("fontSize", 15);	
+	}
+
+	if (data.field2!=null){
+     $("#field2").html(data.field2).css("fontSize", 15);
+	}
+	else{
+	$("#field2").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field3!=null){
+     $("#field3").html(data.field3).css("fontSize", 15);
+	}
+	else{
+	$("#field3").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field4!=null){
+     $("#field4").html(data.field4).css("fontSize", 15);
+	}
+	else{
+	$("#field4").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field5!=null){
+     $("#field5").html(data.field5).css("fontSize", 15);
+	}
+	else{
+	$("#field5").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field6!=null){
+     $("#field6").html(data.field6).css("fontSize", 15);
+	}
+	else{
+	$("#field6").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field7!=null){
+     $("#field7").html(data.field7).css("fontSize", 15);
+	}
+	else{
+	$("#field7").html("OFFLINE").css("fontSize", 15);	
+	}
+
+
+	$("#entry_id").css('color', 'black');
+
+
+
+lastUpdtTime = (new Date()).getTime();
+	}).fail(function() { 
+		$("#entry_id").html("Error while retrieving information!").css("fontSize", 15);
+		$("#entry_id").css('color', '#f44b4b');
+		});
+}
+
+function liveTimerUpdtFun() {
+	// drowser requst time past
+	if(lastUpdtTime!=null){
+	var timepass = ((new Date().getTime() - lastUpdtTime)/1000);
+	$("#UpdtIn").html("Last request: " + Math.round(timepass)+ " Sec ago").css("fontSize", 15);
+	$("#UpdtIn").css('color', '#40ef8c');
+
+     // data freshness warning
+     var Freshness = ((new Date().getTime()-d)/1000);
+	 if(alertDone==false && Freshness>4600){
+	 alert('The data '+ Math.round(Freshness) + ' Sec old. SmartHome is probably offline!');
+	 alertDone=true;
+	 }
+	 // data freshness info
+	 if(Freshness<=timepass){
+	 $("#IsDataFresh").html("Last data upload: less than 10 sec. ago").css("fontSize", 15);
+	 }else{
+     $("#IsDataFresh").html("Last data upload: " + Math.round(Freshness) + " Sec ago").css("fontSize", 15);
+	 }
+	 $("#IsDataFresh").css('color', '#40b7ef');
+	
+	}
+}
+</script>
+
+
+  <style>
+
+	  li{
+		margin: 10; 
+	  }
+
+	  #Title{
+
+		  padding: 20px;
+		  margin-bottom: -10px;
+		width: 850px;
+	  }
+	  
+  #data {
+    float: left;
+    clear: left;
+    width: 420px;
+    margin: 5px;
+	outline: none;
+
+	padding: 5px;
+	
+	
+}
+
+  #dataLive{
+   
+    width: 420px;
+    margin: 5px;
+	outline: none;
+
+	display: inline-block;
+
+	padding: 5px;
+	
+	
+	
+}
+
+    hr {
+      display: block;
+      height: 2px;
+      border: 0;
+      border-top: 4px solid #ad003a;
+
+      padding: 1;
+    }
+    
+    #MyButton {
+	background-color:#033f47;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #000000;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	
+	text-decoration:none;
+
+    float: left;
+    clear: left;
+    width: 420px;
+  
+	margin-bottom: 10px;
+	outline: none;
+	padding: 5;
+
+}
+#MyButton:hover {
+	background-color:#014b7c;
+}
+#MyButton:active {
+	position:relative;
+	top:1px;
+}
+	  h2{
+	  color:#27ff28;
+	  }
+	 a{
+		  text-decoration: none;
+		  color: #000000;
+	  }
+  </style>
+  
+  
+ <h1 id="Title" style="text-align:left;">=Edo University, SmartHome Metric=</h1><br>
+  <h1  style="text-align:center;"><a href="https://www.edouniversity.edu.ng/" >EDSU</a></h1>
+
+  
+<body link="#ffffff" vlink="#ffffff" alink="#ffffff">
+	
+
+	<span id="data">
+	<hr >
+	<h3 align="center"> Live Charts From Meter</h3>
+	<hr >
+
+
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/temp.html'">Temperature | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power.html'">Power | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/Energy.html'">Energy | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/volt.html'">Voltage | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/Current.html'">Current | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/PowerFactor.html'">Power Factor | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/frequency.html'">Frequency | chart</a></button></p>
+<hr >
+	<div align="left">Edo State University, Uzairue </div>
+	<div  align="left">Creator: WALI </div>
+	<div  align="left">* Automatically updates every 10 Seconds </div>
+	<div id="IsDataFresh" align="left"> </div>
+	<div id="UpdtIn" align="left"> </div>
+</span>
+
+
+
+	<span id="dataLive" >
+
+	<hr>
+	<h3  align="center"> Live data (right now)</h3>
+   <hr>
+
+	<li> VOLTAGE: <span id="field1" > --- </span> V </li>
+	<li> POWER: <span id="field2" > --- </span> W </li>
+	<li> FREQUENCY: <span id="field3" > --- </span> HZ </li>
+	<li> ENERGY: <span id="field4" > --- </span> KW/H </li>
+	<li> CURRENT: <span id="field5" > --- </span> A </li>
+	<li> POWER FACTOR: <span id="field6" > --- </span>  </li>
+	<li> TEMPERATURE: <span id="field7" > --- </span> °C </li>
+	<li> Last value: <span id="created_at" > --- </span> </li>
+	<li> Update # <span id="entry_id" > --- </span> </li>
+	<hr >
+</span>
+
+<span id="data">
+	<hr >
+	<h3 align="center"> Analysis </h3>
+	<hr >
+
+
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/voltage_and_current.html'">Voltage & Current | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power_and_frequency.html'">Power & Frequency | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power_and_energy.html'">Power & Energy | chart</a></button></p>
+	<hr>
+
+</span>
+<p>© <a href="https://www.instagram.com/abdul_waliyi" align="left">CONTACT WALI</a> | 2022</p>
+ 
+</body>
+</html>
