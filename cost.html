@@ -215,7 +215,7 @@ var channelsLoaded = 0;
 // the 'T' Temperature left axis, or the 'O' Other right axis.
 var channelKeys =[];
 
-channelKeys.push({channelNumber:1888103, name:'AC Current',key:'DBN06SRFURNEJ491',
+channelKeys.push({channelNumber:1888103, name:'COST',key:'DBN06SRFURNEJ491',
    fieldList:[{field:8,axis:'₦'}]});
     
 // user's timezone offset
@@ -457,7 +457,7 @@ rangeSelector: {
 		},
     tooltip: {
       valueDecimals: 1,
-      valueSuffix: 'A',
+      valueSuffix: '',
 
 			// reformat the tooltips so that local times are displayed
 			//formatter: function() {
@@ -481,7 +481,7 @@ rangeSelector: {
             title: {
                 text: 'Cost (₦)'
             },
-            id: 'T'
+            id: '₦'
     }, {
     }],
 					    plotOptions: {          ////////////////////////////////////////////////HERE What I DID
@@ -621,7 +621,7 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
 }
 
   </script>
-    <title>SmartHome | Cost</title>
+    <title>SmartHome | COST</title>
   </head>
   <body style="                      background-color: #000000; color: white;">
     <div id="chart-container"><br>
@@ -651,21 +651,10 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
         <option value="3">3 Loads</option>
         <option value="4">4 Loads</option>
         <option value="5">5 Loads</option>
-        <option value="6">6 Loads</option>
-        <option value="7">7 Loads</option>
-        <option value="8">8 Loads</option>
-        <option value="9">9 Loads</option>
-        <option value="10">10 Loads</option>
-        <option value="15">15 Loads</option>
-        <option value="20">20 Loads</option>
-        <option value="25">25 Loads</option>
-        <option value="30">30 Loads</option>
-        <option value="40">40 Loads</option>
-        <option value="50">50 Loads</option>
       </select>
 	  
       <input id="Update" name="Update" type="checkbox" checked><span style="font-family: Lucida Grande;">Update
-        Chart</span> <span id="Latency" style="font-family: Lucida Grande;">(Latency)</span>
+        Chart</span> <span id="Latency" style="font-family: Lucida Grande;">(Latency)</span>  
     </div>
   </body>
 </html>
