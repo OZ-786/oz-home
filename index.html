@@ -86,6 +86,13 @@ function getUpdates() {
 	else{
 	$("#field7").html("OFFLINE").css("fontSize", 15);	
 	}
+		
+	if (data.field8!=null){
+     $("#field8").html(data.field8).css("fontSize", 15);
+	}
+	else{
+	$("#field8").html("OFFLINE").css("fontSize", 15);	
+	}
 
 
 	$("#entry_id").css('color', 'black');
@@ -214,7 +221,7 @@ function liveTimerUpdtFun() {
   
   
  <h1 id="Title" style="text-align:left;">=Welcome OZ=</h1><br>
-  <h1  style="text-align:center;"><a href="https://github.com/OZ-786/HOME" >EDSU</a></h1>
+  <h1  style="text-align:center;"><a href="https://github.com/OZ-786/oz-home" >EDSU</a></h1>
 
   
 <body link="#ffffff" vlink="#ffffff" alink="#ffffff">
@@ -226,13 +233,14 @@ function liveTimerUpdtFun() {
 	<hr >
 
 
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/temp.html'">Temperature | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power.html'">Power | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/Energy.html'">Energy | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/volt.html'">Voltage | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/Current.html'">Current | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/PowerFactor.html'">Power Factor | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/frequency.html'">Frequency | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/temp.html'">Temperature | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/power.html'">Power | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/Energy.html'">Energy | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/volt.html'">Voltage | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/Current.html'">Current | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/PowerFactor.html'">Power Factor | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/frequency.html'">Frequency | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/cost.html'">Cost | chart</a></button></p>
 <hr >
 	<div align="left">Home Metrics </div>
 	<div  align="left">Creator: WALI </div>
@@ -253,6 +261,7 @@ function liveTimerUpdtFun() {
 	<li> POWER: <span id="field2" > --- </span> W </li>
 	<li> FREQUENCY: <span id="field3" > --- </span> HZ </li>
 	<li> ENERGY: <span id="field4" > --- </span> KW/H </li>
+	<li> COST: <span id="field8" > --- </span> KW/H </li>
 	<li> CURRENT: <span id="field5" > --- </span> A </li>
 	<li> POWER FACTOR: <span id="field6" > --- </span>  </li>
 	<li> TEMPERATURE: <span id="field7" > --- </span> °C </li>
@@ -270,6 +279,7 @@ function liveTimerUpdtFun() {
 <p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/voltage_and_current.html'">Voltage & Current | chart</a></button></p>
 <p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power_and_frequency.html'">Power & Frequency | chart</a></button></p>
 <p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power_and_energy.html'">Power & Energy | chart</a></button></p>
+<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-energy/power_and_cost.html'">Power & Cost | chart</a></button></p>
 	<hr>
 
 </span>
