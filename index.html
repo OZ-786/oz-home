@@ -1,16 +1,45 @@
-<html>
-<style>body { background-color: #2b2a2a; font-family: Arial; Color: white;}</style>
+<!--
+=========================================================
+* Argon Dashboard 2 - v2.0.4
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<meta charset="utf-8">
-<meta name="theme-color" content="#031b26" />
-<meta name="robots" content="noindex">
-	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-16x16.png"/>
-	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-96x96.png"/>
-	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-32x32.png"/>
-	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-160x160.png"/>
-	<link rel="shortcut icon" type="image/png" href="https://www.highcharts.com/images/ico/favicon-192x192.png"/>
-<title>MySmartHome</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>
+    Argon Dashboard 2 by Creative Tim
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="./assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+</head>
+
+
+
+
+
+
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
@@ -37,6 +66,13 @@ function getUpdates() {
 
 	$("#created_at").html(d.toDateString() + " " + d.toLocaleTimeString()).css("fontSize", 15);
 	$("#entry_id").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id1").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id2").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id3").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id4").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id5").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id6").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id7").html(data.entry_id).css("fontSize", 15);
 
 		if (data.field1!=null){
      $("#field1").html(data.field1).css("fontSize", 15);
@@ -45,6 +81,16 @@ function getUpdates() {
 	$("#field1").html("OFFLINE").css("fontSize", 15);	
 	}
 
+
+  //dummy voltage
+	if (data.field1!=null){
+     $("#field15").html(data.field1).css("fontSize", 15);
+	}
+	else{
+	$("#field15").html("OFFLINE").css("fontSize", 15);	
+	}
+  // end dv
+
 	if (data.field2!=null){
      $("#field2").html(data.field2).css("fontSize", 15);
 	}
@@ -52,12 +98,31 @@ function getUpdates() {
 	$("#field2").html("OFFLINE").css("fontSize", 15);	
 	}
 
+
+  //dummy POWER
+	if (data.field2!=null){
+     $("#field25").html(data.field2).css("fontSize", 15);
+	}
+	else{
+	$("#field25").html("OFFLINE").css("fontSize", 15);	
+	}
+  // end dP
+
+
 		if (data.field3!=null){
      $("#field3").html(data.field3).css("fontSize", 15);
 	}
 	else{
 	$("#field3").html("OFFLINE").css("fontSize", 15);	
 	}
+   //dummy FREQUENCY
+	if (data.field3!=null){
+     $("#field35").html(data.field3).css("fontSize", 15);
+	}
+	else{
+	$("#field35").html("OFFLINE").css("fontSize", 15);	
+	}
+  // end df
 
 		if (data.field4!=null){
      $("#field4").html(data.field4).css("fontSize", 15);
@@ -65,6 +130,15 @@ function getUpdates() {
 	else{
 	$("#field4").html("OFFLINE").css("fontSize", 15);	
 	}
+  //dummy energy
+
+  if (data.field4!=null){
+     $("#field45").html(data.field4).css("fontSize", 15);
+	}
+	else{
+	$("#field45").html("OFFLINE").css("fontSize", 15);	
+	}
+  //enf de
 
 		if (data.field5!=null){
      $("#field5").html(data.field5).css("fontSize", 15);
@@ -95,14 +169,22 @@ function getUpdates() {
 	}
 
 
-	$("#entry_id").css('color', 'white');
+	$("#entry_id").css('color', 'green');
+  $("#entry_id1").css('color', 'red');
+  $("#entry_id2").css('color', 'green');
+  $("#entry_id3").css('color', 'red');
+  $("#entry_id4").css('color', 'green');
+  $("#entry_id5").css('color', 'red');
+  $("#entry_id6").css('color', 'green');
+  $("#entry_id7").css('color', 'red');
+  
 
 
 
 lastUpdtTime = (new Date()).getTime();
 	}).fail(function() { 
 		$("#entry_id").html("Error while retrieving information!").css("fontSize", 15);
-		$("#entry_id").css('color', '#f44b4b');
+		$("#entry_id").css('color', 'green');
 		});
 }
 
@@ -131,159 +213,1034 @@ function liveTimerUpdtFun() {
 }
 </script>
 
+<script>
+  // Get a reference to the div
+  var myDiv = document.getElementById('myDive');
 
-  <style>
+  // Create an iframe element
+  var iframe = document.createElement('iframe');
 
-	  li{
-		margin: 10; 
-	  }
+  // Set the source (URL) of the web page you want to load
+  iframe.src = 'https://oz-786.github.io/oz-home/temp.html';
 
-	  #Title{
+  // Set the attributes of the iframe (you can customize these as needed)
+  iframe.width = '100%';
+  iframe.height = '500px';
 
-		  padding: 20px;
-		  margin-bottom: -10px;
-		width: 850px;
-	  }
-	  
-  #data {
-    float: left;
-    clear: left;
-    width: 420px;
-    margin: 5px;
-	outline: none;
-
-	padding: 5px;
-	
-	
-}
-
-  #dataLive{
-   
-    width: 420px;
-    margin: 5px;
-	outline: none;
-
-	display: inline-block;
-
-	padding: 5px;
-	
-	
-	
-}
-
-    hr {
-      display: block;
-      height: 2px;
-      border: 0;
-      border-top: 4px solid #ad003a;
-
-      padding: 1;
-    }
-    
-    #MyButton {
-	background-color:#033f47;
-	-moz-border-radius:28px;
-	-webkit-border-radius:28px;
-	border-radius:28px;
-	border:1px solid #000000;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	
-	text-decoration:none;
-
-    float: left;
-    clear: left;
-    width: 420px;
-  
-	margin-bottom: 10px;
-	outline: none;
-	padding: 5;
-
-}
-#MyButton:hover {
-	background-color:#014b7c;
-}
-#MyButton:active {
-	position:relative;
-	top:1px;
-}
-	  h2{
-	  color:#27ff28;
-	  }
-	 a{
-		  text-decoration: none;
-		  color: #000000;
-	  }
-  </style>
-  
-  
- <h1 id="Title" style="text-align:left;">=Welcome OZ=</h1><br>
-<!---  <h1  style="text-align:center;"><a href="https://github.com/OZ-786/oz-home" >EDSU</a></h1> --->
-
-  
-<body link="#ffffff" vlink="#ffffff" alink="#ffffff">
-	
-
-	<span id="data">
-	<hr >
-	<h3 align="center"> Live Charts From Meter</h3>
-	<hr >
-
-
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/temp.html'">Temperature | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/power.html'">Power | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/Energy.html'">Energy | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/volt.html'">Voltage | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/Current.html'">Current | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/PowerFactor.html'">Power Factor | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/frequency.html'">Frequency | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/cost.html'">Cost | chart</a></button></p>
-<hr >
-	<div align="left">Home Metrics </div>
-	<div  align="left">Creator: WALI </div>
-	<div  align="left">* Automatically updates every 10 Seconds </div>
-	<div id="IsDataFresh" align="left"> </div>
-	<div id="UpdtIn" align="left"> </div>
-</span>
+  // Append the iframe to the div
+  myDiv.appendChild(iframe);
+</script>
 
 
 
-	<span id="dataLive" >
-
-	<hr>
-	<h3  align="center"> Live data (right now)</h3>
-   <hr>
-
-	<li> VOLTAGE: <span id="field1" > --- </span> V </li>
-	<li> POWER: <span id="field2" > --- </span> W </li>
-	<li> FREQUENCY: <span id="field3" > --- </span> HZ </li>
-	<li> ENERGY: <span id="field4" > --- </span> KW/H </li>
-	<li> COST: &#8358; <span id="field8" > --- </span>  </li>
-	<li> CURRENT: <span id="field5" > --- </span> A </li>
-	<li> POWER FACTOR: <span id="field6" > --- </span> &percnt; </li>
-	<li> TEMPERATURE: <span id="field7" > --- </span> °C </li>
-	<li> Last value: <span id="created_at" > --- </span> </li>
-	<li> Update # <span id="entry_id" > --- </span> </li>
-	<hr >
-</span>
-
-<span id="data">
-	<hr >
-	<h3 align="center"> Analysis </h3>
-	<hr >
 
 
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/voltage_and_current.html'">Voltage & Current | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/power_and_frequency.html'">Power & Frequency | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/power_and_energy.html'">Power & Energy | chart</a></button></p>
-<p><button id="MyButton" onclick="location.href='https://oz-786.github.io/oz-home/power_and_cost.html'">Power & Cost | chart</a></button></p>
-	<hr>
 
-</span>
-<p> © <a href="https://www.instagram.com/abdul_waliyi" align="left">CONTACT WALI</a> | 2023</p>
+
+
+
+
+
+
+
+
+
+
+
+<body class="g-sidenav-show   bg-gray-100">
+  <div class="min-height-300 bg-primary position-absolute w-100"></div>
+  <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
+        <img src="./assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-1 font-weight-bold">HomeMetrics</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" href="./pages/dashboard.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard</span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/tables.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Tables</span>
+          </a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link " href="./pages/billing.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Billing</span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/virtual-reality.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-app text-info text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Virtual Reality</span>
+          </a>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/rtl.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">RTL</span>
+          </a>
+        </li> -->
+        <!-- <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/profile.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Profile</span>
+          </a>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/sign-in.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Sign In</span>
+          </a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link " href="./pages/sign-up.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-collection text-info text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Sign Up</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="sidenav-footer mx-3 ">
+      <div class="card card-plain shadow-none" id="sidenavCard">
+        <img class="w-50 mx-auto" src="./assets/img/illustrations/icon-documentation.svg" alt="sidebar_illustration">
+        <div class="card-body text-center p-3 w-100 pt-0">
+          <div class="docs-info">
+            <h6 class="mb-0">Need help?</h6>
+            <p class="text-xs font-weight-bold mb-0">Please send a message</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard" target="_blank" class="btn btn-success btn-sm w-100 mb-3"><i class="fa fa-whatsapp fa-lightbulb me-sm-1"></i>whatsapp</a>
+      <a class="btn btn-primary btn-sm mb-0 w-100" href="https://www.creative-tim.com/product/argon-dashboard-pro?ref=sidebarfree" type="button"><i class="fa fa-twitter fa-lightbulb me-sm-1"></i>twitter</a>
+    </div>
+  </aside>
+  <main class="main-content position-relative border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
+            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li>
+          </ol>
+          <h6 class="font-weight-bolder text-white mb-0">Dashboard</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+            <div class="input-group">
+              <div class="form-check form-switch ps-0 ms-auto my-auto">
+                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
+              </div>
+            </div>
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+            <li class="nav-item d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
+                <i class="fa fa-regular fa-lightbulb me-sm-1"></i>
+                <span class="d-sm-inline d-none">Dark / light </span>
+              </a>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line bg-white"></i>
+                  <i class="sidenav-toggler-line bg-white"></i>
+                  <i class="sidenav-toggler-line bg-white"></i>
+                </div>
+              </a>
+            </li>
+            <!-- <li class="nav-item px-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0">
+                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+              </a>
+            </li> -->
+            <!-- <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer"></i>
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New message</span> from Laur
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          13 minutes ago
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New album</span> by Travis Scott
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          1 day
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <title>credit-card</title>
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                              <g transform="translate(1716.000000, 291.000000)">
+                                <g transform="translate(453.000000, 454.000000)">
+                                  <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
+                                  <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </svg>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Payment successfully completed
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          2 days
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">voltage</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- $53,000 --><span id="field1" > --- </span> v
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-success text-sm font-weight-bolder">+55%</span>
+                      since yesterday
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                    <i class="fa fa-solid fa-bolt text-lg opacity-10" aria-hidden="true"></i>
+                    <!-- <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Power</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- 2,300 --> <span id="field2" > --- </span> w
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-success text-sm font-weight-bolder">+3%</span>
+                      since last week
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-danger shadow-warning text-center rounded-circle">
+                    <i class="fa fa-solid fa-plug opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Frequency</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- +3,462 --> <span id="field3" > --- </span> hz
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-danger text-sm font-weight-bolder">-2%</span>
+                      since last quarter
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                    <i class="fa fa-solid fa-wave-square fa-beat opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-8">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Energy</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- $103,430 --> <span id="field4" > --- </span> Kw/h
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                    <i class="fa fa-solid fa-charging-station fa-beat-fade opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <iframe src="https://oz-786.github.io/oz-home/temp.html" width="700" height="500" frameborder="0"></iframe>
+        <!-- <div class="col-lg-7 mb-lg-0 mb-4">
+          <div class="card z-index-2 h-100">
+            <div class="card-header pb-0 pt-3 bg-transparent">
+              <h6 class="text-capitalize">Sales overview</h6>
+              <p class="text-sm mb-0">
+                <i class="fa fa-arrow-up text-success"></i>
+                <span class="font-weight-bold">4% more</span> in 2021
+              </p>
+            </div>
+            <div class="card-body p-3">
+              <div class="chart">
+                <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card card-carousel overflow-hidden h-100 p-0">
+            <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+              <div class="carousel-inner border-radius-lg h-100">
+                <div class="carousel-item h-100 active" style="background-image: url('../assets/img/coro1.jpg');
+            background-size: cover;">
+                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                      <i class="ni ni-camera-compact text-dark opacity-10"></i>
+                    </div>
+                    <h5 class="text-white mb-1">Get started with Argon</h5>
+                    <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
+                  </div>
+                </div>
+                <div class="carousel-item h-100" style="background-image: url('../assets/img/coro2.jpg');
+            background-size: cover;">
+                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                      <i class="ni ni-bulb-61 text-dark opacity-10"></i>
+                    </div>
+                    <h5 class="text-white mb-1">Faster way to create web pages</h5>
+                    <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</p>
+                  </div>
+                </div>
+                <div class="carousel-item h-100" style="background-image: url('../assets/img/coro3.jpg');
+            background-size: cover;">
+                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                      <i class="ni ni-trophy text-dark opacity-10"></i>
+                    </div>
+                    <h5 class="text-white mb-1">Share with us your design tips!</h5>
+                    <p>Don’t be afraid to be wrong because you can’t learn anything from a compliment.</p>
+                  </div>
+                </div>
+              </div>
+              <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div> -->
+      </div>
+      <div class="row mt-4">
+        <div class="col-lg-7 mb-lg-0 mb-4">
+          <div class="card ">
+            <div class="card-header pb-0 p-3">
+              <div class="d-flex justify-content-between">
+                <h6 class="mb-2">Live data (right now)</h6>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center ">
+                <tbody>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-voltage-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Voltage</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field15" > --- </span>v</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-substation-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Power</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field25" > --- </span>w</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id1" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-tuning-fork-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Frequency</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field35" > --- </span> HZ</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id2" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-energy-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Energy</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field45" > --- </span> KW/H </h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id3" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-cost-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Cost</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0">&#8358; <span id="field8" > --- </span></h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id4" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-comparator-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Current<h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field5" > --- </span> A </h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id5" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-battery-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Power Factor</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field6" > --- </span> &percnt;</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id6" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-temperature-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Temprature</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field7" > --- </span> °C </h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id7" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <!-- <img src="../assets/img/icons/flags/US.png" alt="Country flag"> -->
+                        </div>
+                        <div class="ms-4">
+                          <!-- <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Power</h6> -->
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">STAMP:</p>
+                        <h6 class="text-sm mb-0"><span id="created_at" > --- </span></h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <!-- <p class="text-xs font-weight-bold mb-0">Update:</p> -->
+                        <!-- <h6 class="text-sm mb-0" style="color: black;" >#<span id="entry_id" > --- </span></h6> -->
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <h6 class="mb-0">Live Charts From Meter</h6>
+            </div>
+            <div class="card-body p-3">
+              <ul class="list-group">
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-temperature-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Temprature chart</h6>
+                      <span class="text-xs">See live  <span class="font-weight-bold">Temp readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/temp.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-substation-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-energy-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Energy chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold"> Energy readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/Energy.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-voltage-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">voltage chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Voltage readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/volt.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-comparator-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Current chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Current readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/Current.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-battery-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power factor chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power Factor readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/PowerFactor.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-tuning-fork-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Frequency chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Frequency readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/frequency.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-cost-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Cost chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Cost readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/cost.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-voltmeter-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">voltage & Current chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Voltage & current readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/voltage_and_current.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-frequency-graph-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power & Frequency chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power & Frequency readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power_and_frequency.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-energy-efficiency-a-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power & energy chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power & energy readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power_and_energy.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-positive-dynamic-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power & cost chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power & cost readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power_and_cost.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer pt-3  ">
+        <div class="container-fluid">
+          <div class="row align-items-center justify-content-lg-between">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+              <div class="copyright text-center text-sm text-muted text-lg-start">
+                © <script>
+                  document.write(new Date().getFullYear())
+                </script>,
+                made with <i class="fa fa-heart"></i> by
+                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+                for a better web.
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
  
+  <!--   Core JS Files   -->
+  <script src="./assets/js/core/popper.min.js"></script>
+  <script src="./assets/js/core/bootstrap.min.js"></script>
+  <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="./assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="./assets/js/plugins/chartjs.min.js"></script>
+  <script>
+    var ctx1 = document.getElementById("chart-line").getContext("2d");
+
+    var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
+    gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
+    gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
+    new Chart(ctx1, {
+      type: "line",
+      data: {
+        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [{
+          label: "Mobile apps",
+          tension: 0.4,
+          borderWidth: 0,
+          pointRadius: 0,
+          borderColor: "#5e72e4",
+          backgroundColor: gradientStroke1,
+          borderWidth: 3,
+          fill: true,
+          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+          maxBarThickness: 6
+
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: true,
+              drawOnChartArea: true,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              padding: 10,
+              color: '#fbfbfb',
+              font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              color: '#ccc',
+              padding: 20,
+              font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+        },
+      },
+    });
+  </script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="./assets/js/argon-dashboard.min.js?v=2.0.4"></script>
 </body>
+
 </html>
