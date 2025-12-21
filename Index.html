@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WaliTech HomeMetrics Pro</title>
+  <!-- Tailwind CSS & Dark Mode -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { slate: { 750: '#293548', 850: '#1e293b', 950: '#0f172a' } } } }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    .sidebar-link { display: flex; align-items: center; padding: 12px 16px; border-radius: 8px; transition: all 0.2s; cursor: pointer; margin-bottom: 4px; font-weight: 500; }
+    .sidebar-link:hover { background-color: #e2e8f0; color: #0f172a; }
+    .dark .sidebar-link:hover { background-color: #334155; color: #f1f5f9; }
+    .sidebar-link.active { background-color: #2563eb; color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
+    .card { border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); position: relative; transition: background-color 0.3s; }
+    .status-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem; }
+    .status-on { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .status-off { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .blink { animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+    .mobile-menu-closed { transform: translateX(-100%); }
+    .data-table th { padding: 10px; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
+    .data-table td { padding: 10px; border-bottom-width: 1px; font-size: 0.85rem; }
+    .zoom-btn { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; transition: all 0.2s; border-width: 1px; }
+    .zoom-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+    .stat-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .stat-val { font-size: 1.25rem; font-weight: 800; }
+    .stat-unit { font-size: 0.75rem; font-weight: 600; margin-left: 2px; }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 transition-colors duration-300">
+
+  <script>
+    // *** PASTE GOOGLE SCRIPT URL HERE ***
+    const API_URL = "https://script.google.com/macros/s/AKfycbxH13m5DXcyBH2BZ0qp1H3GovZCXEDRbjnD5yzj_KZL3O_MAGXG9PKu8dQdyDHhX0Vi_A/exec";
+
+    const google = {
+      script: {
+        run: {
+          withSuccessHandler: function(onSuccess) {
+            return {
+              getDashboardState: () => callApi('getDashboardState', {}, onSuccess),
+              getMonthData: (sheet) => callApi('getMonthData', {sheet: sheet}, onSuccess),
+              getDetailedYearlyReport: () => callApi('getDetailedYearlyReport', {}, onSuccess),
+              getYearlyGridStats: (year) => callApi('getYearlyGridStats', {year: year}, onSuccess),
+              getAlertSettings: () => callApi('getAlertSettings', {}, onSuccess),
+              getAlertLogs: () => callApi('getAlertLogs', {}, onSuccess),
+              saveAlertSettings: (s) => callApi('saveAlertSettings', {data: JSON.stringify(s)}, onSuccess)
+            };
+          }
+        }
+      }
+    };
+    function callApi(action, params, callback) {
+      const url = new URL(API_URL);
+      url.searchParams.append("action", action);
+      for (const key in params) url.searchParams.append(key, params[key]);
+      fetch(url).then(r => r.json()).then(d => { if(callback) callback(d); }).catch(e => console.error("API Error", e));
+    }
+  </script>
+
+  <div id="main-loader" class="hidden absolute inset-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+      <i class="fa-solid fa-circle-notch fa-spin text-blue-600 text-2xl"></i><span class="font-bold text-slate-700 dark:text-slate-200">Processing...</span>
+    </div>
+  </div>
+
+  <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden"></div>
+
+  <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col z-30 mobile-menu mobile-menu-closed md:relative md:translate-x-0 transition-colors duration-300">
+    <div class="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 justify-between">
+      <div class="flex items-center"><i class="fa-solid fa-bolt text-blue-600 text-xl mr-2"></i><span class="font-bold text-lg text-slate-800 dark:text-white">WaliTech</span></div>
+      <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-4 flex-1 overflow-y-auto text-slate-600 dark:text-slate-400">
+      <p class="px-4 text-xs font-bold text-slate-400 uppercase mb-2 mt-2">Monitoring</p>
+      <a onclick="showPage('dashboard')" id="nav-dashboard" class="sidebar-link active"><i class="fa-solid fa-gauge w-5 mr-3"></i> Dashboard</a>
+       <div>
+        <div onclick="toggleChartsMenu()" class="sidebar-link justify-between cursor-pointer select-none">
+           <div class="flex items-center"><i class="fa-solid fa-chart-line w-5 mr-3"></i> Charts</div>
+           <i id="charts-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
+        </div>
+        <div id="charts-submenu" class="hidden flex-col pl-9 pr-2 space-y-1 mb-2">
+           <a href="Historical_Chart.html" class="block py-2 px-3 text-sm rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 transition">
+             Historical Chart
+           </a>
+           <a href="Chart_Analytics.html" class="block py-2 px-3 text-sm rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 transition">
+             Chart Analytics
+           </a>
+        </div>
+      </div>
+      <p class="px-4 text-xs font-bold text-slate-400 uppercase mb-2 mt-6">Reports</p>
+      <a onclick="showPage('analysis')" id="nav-analysis" class="sidebar-link"><i class="fa-solid fa-magnifying-glass-chart w-5 mr-3"></i> Smart Analysis</a>
+      <a onclick="showPage('yearly')" id="nav-yearly" class="sidebar-link"><i class="fa-solid fa-calendar-days w-5 mr-3"></i> Yearly Report</a>
+      <p class="px-4 text-xs font-bold text-slate-400 uppercase mb-2 mt-6">System</p>
+      <a onclick="showPage('alerts')" id="nav-alerts" class="sidebar-link"><i class="fa-solid fa-bell w-5 mr-3"></i> Settings & Alerts</a> 
+      <a href="Old_Dashboard.html" target="_blank" class="sidebar-link">
+      <i class="fa-solid fa-microchip w-5 mr-3"></i> Old Dashboard
+      </a>
+    </div>
+    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+       <button onclick="toggleTheme()" class="w-full mb-4 border border-slate-300 dark:border-slate-600 rounded-lg py-2 text-sm font-bold flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+        <i class="fa-solid fa-moon"></i> <span>Theme</span>
+       </button>
+       <div class="flex items-center justify-between mb-1"><span class="text-xs font-bold text-slate-500">SYSTEM STATUS</span><button onclick="refreshData()" class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-rotate"></i></button></div>
+       <div id="side-status-text" class="text-sm font-bold text-slate-400">Checking...</div>
+    </div>
+  </aside>
+
+  <main class="flex-1 flex flex-col min-w-0 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <header class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 z-10 transition-colors duration-300">
+      <div class="flex items-center">
+        <button onclick="toggleMobileMenu()" class="md:hidden mr-4 text-slate-500 p-2"><i class="fa-solid fa-bars text-xl"></i></button>
+        <h1 class="text-lg font-bold text-slate-800 dark:text-white hidden sm:block" id="page-title">Dashboard</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="selector-container" class="hidden flex gap-2">
+           <select id="sheetSelector" onchange="fetchMonthData()" class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white text-sm rounded-lg p-2 outline-none"><option>Loading...</option></select>
+        </div>
+        <div id="top-status-badge" class="status-badge status-off"><i class="fa-solid fa-circle text-[6px] mr-2"></i> OFFLINE</div>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-4 sm:p-6 scroll-smooth relative">
+      
+      <!-- 1. DASHBOARD -->
+      <div id="page-dashboard" class="space-y-6 animate-fade">
+        <div class="flex justify-between items-end mb-4">
+          <div><h2 class="text-2xl font-bold text-slate-900 dark:text-white">Live Overview</h2><p class="text-sm text-slate-500 dark:text-slate-400">Real-time parameters.</p></div>
+          <div class="text-right"><div class="text-xs font-bold text-slate-400 uppercase">Last Data</div><div id="last-updated-main" class="text-sm font-mono font-bold text-blue-600 dark:text-blue-400">--</div></div>
+        </div>
+
+        <!-- Budget & Eco Row (Fixed) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700">
+            <div class="flex justify-between items-center mb-2"><h3 class="font-bold text-slate-700 dark:text-slate-200">Monthly Budget</h3><span class="text-xs font-bold text-slate-400" id="budget-text">0% Used</span></div>
+            <div class="w-full bg-slate-200 rounded-full h-4 dark:bg-slate-700"><div id="budget-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+            <div class="flex justify-between mt-2 text-xs"><span id="curr-spend" class="font-bold text-slate-600 dark:text-slate-400">₦0</span><span class="text-slate-400">Target: ₦<span id="budget-target-display">50,000</span></span></div>
+          </div>
+          <div class="card bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 flex items-center justify-between">
+            <div><div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase">Carbon Footprint</div><div class="text-2xl font-bold text-emerald-800 dark:text-emerald-200"><span id="co2-val">0</span> <span class="text-sm">kg</span></div><div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1"><i class="fa-solid fa-tree"></i> Offset by <span id="tree-val">0</span> trees</div></div><i class="fa-solid fa-leaf text-4xl text-emerald-200 dark:text-emerald-800"></i>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-blue-500"><div class="stat-label text-slate-400">Voltage</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-vol">0</span><span class="stat-unit text-slate-500">V</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-purple-500"><div class="stat-label text-slate-400">Current</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-cur">0</span><span class="stat-unit text-slate-500">A</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-orange-500"><div class="stat-label text-slate-400">Power</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-pow">0</span><span class="stat-unit text-slate-500">W</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-teal-500"><div class="stat-label text-slate-400">Freq</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-freq">0</span><span class="stat-unit text-slate-500">Hz</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-indigo-500"><div class="stat-label text-slate-400">PF</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-pf">0.00</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-yellow-500"><div class="stat-label text-slate-400">Month Energy</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-m-eng">0</span><span class="stat-unit text-slate-500">kWh</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-green-500"><div class="stat-label text-slate-400">Month Cost</div><div class="stat-val text-green-600 dark:text-green-400" id="d-m-cost">₦0.00</div></div>
+          <div class="card border-l-4 border-slate-600 bg-slate-800 dark:bg-slate-700 text-white col-span-2 md:col-span-1 lg:col-span-1"><div class="stat-label text-slate-400">Projected Bill</div><div class="stat-val text-white" id="d-pred-cost">...</div><div class="text-xs text-slate-400 mt-1" id="d-pred-desc">Calculating...</div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-yellow-600"><div class="stat-label text-slate-400">Year Energy</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-y-eng">0</span><span class="stat-unit text-slate-500">kWh</span></div></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-green-700"><div class="stat-label text-slate-400">Year Cost</div><div class="stat-val text-green-800 dark:text-green-500" id="d-y-cost">₦0.00</div></div>
+        </div>
+      </div>
+
+      <!-- 3. ANALYSIS -->
+      <div id="page-analysis" class="hidden space-y-6">
+        <div class="flex justify-between items-center"><h2 class="text-xl font-bold text-slate-800 dark:text-white">Smart Analysis</h2><button onclick="exportCSV('analysis')" class="zoom-btn bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600"><i class="fa-solid fa-download mr-1"></i> Export</button></div>
+        
+        <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Power Usage Intensity (Heatmap)</h3><div id="chart-heatmap" class="h-80"></div></div>
+
+        <!-- RESTORED: Weekly Breakdown -->
+        <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700">
+           <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Weekly Breakdown</h3>
+           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div class="lg:col-span-2"><div id="chart-weekly-bar" class="h-64"></div></div>
+              <div><table class="w-full text-sm data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Week</th><th>Cost</th><th>Energy</th></tr></thead><tbody id="table-weekly-rows" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div>
+           </div>
+        </div>
+
+        <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 border-b dark:border-slate-700 pb-2">Grid Reliability (Month)</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center"><div class="col-span-1 flex justify-center"><div id="chart-grid-donut"></div></div><div class="col-span-2 grid grid-cols-2 gap-4"><div class="bg-green-50 dark:bg-green-900/30 p-4 rounded border border-green-100 dark:border-green-800"><div class="text-xs font-bold text-green-700 dark:text-green-400 uppercase">On-Grid</div><div id="grid-on-txt" class="text-xl font-bold text-green-700 dark:text-green-400">--</div></div><div class="bg-red-50 dark:bg-red-900/30 p-4 rounded border border-red-100 dark:border-red-800"><div class="text-xs font-bold text-red-700 dark:text-red-400 uppercase">Off-Grid</div><div id="grid-off-txt" class="text-xl font-bold text-red-700 dark:text-red-400">--</div></div></div></div></div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-2">Last 24h Peaks</h3><table class="w-full data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Param</th><th>High</th><th>Time</th><th>Low</th><th>Time</th></tr></thead><tbody id="table-24h" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div>
+          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-2">Last 48h Peaks</h3><table class="w-full data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Param</th><th>High</th><th>Time</th><th>Low</th><th>Time</th></tr></thead><tbody id="table-48h" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- 4. YEARLY -->
+      <div id="page-yearly" class="hidden space-y-6">
+         <div class="flex justify-between items-center"><h2 class="text-xl font-bold text-slate-800 dark:text-white">Yearly Comparison</h2><button onclick="exportCSV('yearly')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold shadow"><i class="fa-solid fa-file-export mr-1"></i> Export</button></div>
+         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 lg:col-span-2"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Cost Comparison</h3><div id="chart-yr-cost" class="h-80"></div></div>
+            <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 lg:col-span-2"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Energy Comparison</h3><div id="chart-yr-eng" class="h-80"></div></div>
+         </div>
+         <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Detailed Breakdown</h3><div class="overflow-x-auto"><table class="w-full text-sm text-left data-table text-slate-700 dark:text-slate-300"><thead id="yearly-table-head" class="bg-slate-100 dark:bg-slate-700"></thead><tbody id="yearly-table-body" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div></div>
+      </div>
+
+      <!-- 5. SETTINGS & ALERTS -->
+      <div id="page-alerts" class="hidden space-y-6">
+         <h2 class="text-xl font-bold text-slate-800 dark:text-white">Settings & Alerts</h2>
+         <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-red-500">
+            <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">System Thresholds</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+               <div><label class="text-xs font-bold text-slate-500">Max Voltage</label><input id="set-vol" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white"></div>
+               <div><label class="text-xs font-bold text-slate-500">Min Voltage</label><input id="set-low-vol" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white"></div>
+               <div><label class="text-xs font-bold text-slate-500">Max Power</label><input id="set-pow" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white"></div>
+               <div><label class="text-xs font-bold text-slate-500">Max Temp</label><input id="set-temp" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white"></div>
+               
+               <!-- NEW: BUDGET INPUT -->
+               <div class="md:col-span-4 border-t pt-4 dark:border-slate-600">
+                  <label class="text-xs font-bold text-slate-500">Monthly Budget Target (₦)</label>
+                  <input id="set-budget" type="number" class="w-full md:w-1/3 border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="50000">
+               </div>
+
+            </div>
+            <button onclick="saveSettings()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-blue-700">Save System Settings</button>
+         </div>
+         <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-700 dark:text-slate-200">Alert History</h3><button onclick="loadAlerts()" class="text-blue-600"><i class="fa-solid fa-rotate"></i></button></div><div class="overflow-x-auto h-96"><table class="w-full text-sm text-left data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Time</th><th>Type</th><th>Value</th><th>Message</th></tr></thead><tbody id="alert-table-body" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div></div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let chartInst = {};
+    let globalData = []; 
+    let currentZoomHours = 24;
+    let monthlyBudget = 50000; // Default, will update from server
+
+    window.onload = function() {
+      if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+      refreshData();
+      setInterval(refreshData, 30000); 
+      loadSettings();
+    };
+
+    function toggleTheme() {
+       const html = document.documentElement;
+       if(html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); } 
+       else { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); }
+       if(globalData.length > 0) renderMonth({success:true, data:globalData});
+       fetchDetailedYearly(); // Re-render yearly to fix colors
+    }
+
+    function toggleLoader(show) { document.getElementById('main-loader').classList.toggle('hidden', !show); }
+    function toggleMobileMenu() { document.getElementById('sidebar').classList.toggle('mobile-menu-closed'); document.getElementById('mobile-overlay').classList.toggle('hidden'); }
+
+    function refreshData() { google.script.run.withSuccessHandler(updateState).getDashboardState(); }
+
+    function updateState(res) {
+      if(!res.success) return;
+      const isOnline = res.status === "ON-GRID";
+      document.getElementById('top-status-badge').className = isOnline ? "status-badge status-on" : "status-badge status-off";
+      document.getElementById('top-status-badge').innerHTML = isOnline ? '<i class="fa-solid fa-circle text-[6px] mr-2 blink"></i> ON-GRID' : '<i class="fa-solid fa-circle text-[6px] mr-2"></i> OFFLINE';
+      document.getElementById('side-status-text').innerText = isOnline ? "Online" : "Offline";
+
+      // Update Budget from Server if provided
+      if(res.budget) { monthlyBudget = parseFloat(res.budget); }
+
+      const sheetSel = document.getElementById('sheetSelector');
+      if(sheetSel.options.length <= 1) {
+        sheetSel.innerHTML = "";
+        res.sheets.forEach(s => { let o = document.createElement('option'); o.value = s; o.text = s; sheetSel.appendChild(o); });
+      }
+
+      if(res.latest) {
+        const l = res.latest;
+        document.getElementById('last-updated-main').innerText = l.ts;
+        setTxt('d-vol', l.vol); setTxt('d-cur', l.cur); setTxt('d-pow', Math.round(l.pow)); 
+        setTxt('d-m-eng', l.monthEng.toFixed(2)); 
+        setTxt('d-y-eng', l.yearEng.toFixed(2));
+        setTxt('d-freq', l.freq.toFixed(1)); 
+        setTxt('d-pf', l.pf.toFixed(2));
+        
+        let fmt = new Intl.NumberFormat('en-NG', {style:'currency', currency:'NGN'});
+        document.getElementById('d-m-cost').innerText = fmt.format(l.monthCost);
+        document.getElementById('d-y-cost').innerText = fmt.format(l.yearCost);
+
+        // --- PREDICTION LOGIC ---
+        const now = new Date();
+        const dNum = now.getDate();
+        const totalDays = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+        if(dNum > 0) {
+           const dailyAvg = l.monthCost / dNum;
+           const pred = dailyAvg * totalDays;
+           document.getElementById('d-pred-cost').innerText = fmt.format(pred);
+           document.getElementById('d-pred-desc').innerText = `~${fmt.format(dailyAvg)} / day`;
+        }
+
+        // --- BUDGET BAR LOGIC (Safe Check) ---
+        if(document.getElementById('budget-bar')) {
+            let spend = l.monthCost;
+            let percent = (spend / monthlyBudget) * 100;
+            if(percent > 100) percent = 100;
+            
+            document.getElementById('budget-bar').style.width = percent + "%";
+            document.getElementById('budget-text').innerText = percent.toFixed(1) + "% Used";
+            document.getElementById('budget-target-display').innerText = monthlyBudget.toLocaleString();
+            document.getElementById('curr-spend').innerText = fmt.format(spend);
+            
+            let bar = document.getElementById('budget-bar');
+            if(percent < 50) bar.className = "bg-green-500 h-4 rounded-full transition-all duration-500";
+            else if(percent < 85) bar.className = "bg-yellow-500 h-4 rounded-full transition-all duration-500";
+            else bar.className = "bg-red-500 h-4 rounded-full transition-all duration-500";
+        }
+
+        // --- ECO STATS LOGIC ---
+        if(document.getElementById('co2-val')) {
+            let kwh = l.monthEng;
+            let co2 = kwh * 0.43; 
+            let trees = co2 / 1.75; 
+            document.getElementById('co2-val').innerText = co2.toFixed(1);
+            document.getElementById('tree-val').innerText = trees.toFixed(1);
+        }
+      }
+    }
+
+    function setTxt(id, val) { document.getElementById(id).innerText = val; }
+
+
+    function toggleChartsMenu() {
+      const menu = document.getElementById('charts-submenu');
+      const arrow = document.getElementById('charts-arrow');
+      
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+        arrow.style.transform = "rotate(180deg)";
+      } else {
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+        arrow.style.transform = "rotate(0deg)";
+      }
+    }
+
+    function showPage(p) {
+      ['dashboard', 'analysis', 'yearly', 'alerts'].forEach(x => {
+        document.getElementById('page-'+x).classList.add('hidden');
+        document.getElementById('nav-'+x).classList.remove('active', 'bg-blue-600', 'text-white');
+      });
+      document.getElementById('page-'+p).classList.remove('hidden');
+      document.getElementById('nav-'+p).classList.add('active');
+      document.getElementById('page-title').innerText = p === "yearly" ? "Yearly Report" : p.charAt(0).toUpperCase() + p.slice(1);
+      
+      document.getElementById('selector-container').classList.add('hidden');
+      document.getElementById('sheetSelector').classList.add('hidden');
+
+      if(p === 'analysis') {
+        document.getElementById('selector-container').classList.remove('hidden');
+        document.getElementById('sheetSelector').classList.remove('hidden');
+        fetchMonthData();
+      } else if (p === 'yearly') {
+        fetchDetailedYearly();
+      } else if (p === 'alerts') {
+        loadAlerts();
+        loadSettings();
+      }
+    }
+
+    function fetchMonthData() {
+      const s = document.getElementById('sheetSelector').value;
+      if(s && s!=="Loading...") { toggleLoader(true); google.script.run.withSuccessHandler(r => { renderMonth(r); toggleLoader(false); }).getMonthData(s); }
+    }
+
+    function setZoom(hours) {
+      toggleLoader(true); 
+      currentZoomHours = hours;
+      document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      setTimeout(() => { if(globalData.length > 0) renderMonth({success:true, data: globalData}); toggleLoader(false); }, 50);
+    }
+
+    function renderMonth(res) {
+      if(!res.success) return;
+      globalData = res.data;
+      const d = res.data;
+      const latestTs = d[d.length-1].ts;
+      const cutoff = latestTs - (currentZoomHours * 3600 * 1000);
+      const filtered = d.filter(x => x.ts > cutoff);
+      const rate = Math.ceil(filtered.length/400); 
+      const cd = filtered.filter((_, i) => i % rate === 0);
+      
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#cbd5e1' : '#374151';
+
+      renderApex('chart-vol', 'Voltage', '#3b82f6', cd, 'vol', textColor);
+      renderApex('chart-pow', 'Power', '#f97316', cd, 'pow', textColor);
+      renderApex('chart-eng', 'Energy', '#eab308', cd, 'eng', textColor);
+
+      const d24 = d.filter(x => (latestTs - x.ts) <= 86400000);
+      const d48 = d.filter(x => (latestTs - x.ts) <= 172800000);
+      populateTable('table-24h', d24);
+      populateTable('table-48h', d48);
+      renderGridAnalysis(d, 'chart-grid-donut', 'grid-on-txt', 'grid-off-txt');
+      renderHeatmap(d, textColor);
+      calculateWeekly(d, textColor); // RESTORED
+    }
+
+    function calculateWeekly(data, textColor) {
+       let weeks = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}};
+       for(let i=1;i<=5;i++) weeks[i] = { costS: 999999, costE: 0, engS: 999999, engE: 0, hasData: false };
+       data.forEach(d => {
+          let date = new Date(d.ts);
+          let w = Math.ceil(date.getDate()/7);
+          if(w>5) w=5; 
+          weeks[w].hasData = true;
+          if(d.cost < weeks[w].costS) weeks[w].costS = d.cost;
+          if(d.cost > weeks[w].costE) weeks[w].costE = d.cost;
+          if(d.eng < weeks[w].engS) weeks[w].engS = d.eng;
+          if(d.eng > weeks[w].engE) weeks[w].engE = d.eng;
+       });
+       let cats = [], series = [], html = "";
+       for(let w=1; w<=5; w++) {
+          let c = 0, e = 0;
+          if(weeks[w].hasData) { c = weeks[w].costE - weeks[w].costS; e = weeks[w].engE - weeks[w].engS; if(c<0) c=weeks[w].costE; }
+          cats.push("W"+w); series.push(c);
+          let fmt = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' });
+          if(weeks[w].hasData) {
+             html += `<tr><td>Week ${w}</td><td class="font-bold text-green-600 dark:text-green-400">${fmt.format(c)}</td><td class="text-slate-500 dark:text-slate-400">${e.toFixed(2)} kWh</td></tr>`;
+          }
+       }
+       document.getElementById('table-weekly-rows').innerHTML = html || "<tr><td colspan='3'>No Data</td></tr>";
+       renderBar('chart-weekly-bar', cats, series, '#22c55e', textColor);
+    }
+
+    function renderHeatmap(data, textColor) {
+       let grid = Array(7).fill().map(() => Array(24).fill(0));
+       let counts = Array(7).fill().map(() => Array(24).fill(0));
+       data.forEach(d => {
+         let date = new Date(d.ts);
+         let day = date.getDay(); 
+         let h = date.getHours();
+         grid[day][h] += d.pow;
+         counts[day][h]++;
+       });
+       for(let d=0; d<7; d++) { for(let h=0; h<24; h++) { if(counts[d][h]>0) grid[d][h] = Math.round(grid[d][h] / counts[d][h]); } }
+       const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+       let series = days.map((day, i) => ({ name: day, data: grid[i].map((v, h) => ({x: h.toString().padStart(2,'0')+":00", y: v})) })).reverse();
+       if(chartInst['heatmap']) chartInst['heatmap'].destroy();
+       chartInst['heatmap'] = new ApexCharts(document.querySelector("#chart-heatmap"), {
+         series: series, chart: { type: 'heatmap', height: 320, toolbar: {show:false}, foreColor: textColor }, dataLabels: { enabled: false },
+         plotOptions: { heatmap: { shadeIntensity: 0.5, colorScale: { ranges: [{from:0, to:100, color:'#10b981', name:'Low'},{from:101, to:400, color:'#facc15', name:'Med'},{from:401, to:10000, color:'#ef4444', name:'High'}] } } }
+       });
+       chartInst['heatmap'].render();
+    }
+
+    function populateTable(id, dataset) {
+      let html = "";
+      [{k:'vol', n:'Volt', u:'V'}, {k:'pow', n:'Power', u:'W'}, {k:'temp', n:'Temp', u:'C'}].forEach(p => {
+         let max = -999, min = 999, maxT = "", minT = "";
+         dataset.forEach(d => { if(d[p.k] > max) { max = d[p.k]; maxT = d.tsStr.split(' ')[1]; } if(d[p.k] < min && d[p.k] > 0) { min = d[p.k]; minT = d.tsStr.split(' ')[1]; } });
+         html += `<tr><td>${p.n}</td><td class="text-red-600 dark:text-red-400 font-bold">${max.toFixed(1)}${p.u}</td><td class="text-xs text-slate-500">${maxT}</td><td class="text-blue-600 dark:text-blue-400 font-bold">${min.toFixed(1)}${p.u}</td><td class="text-xs text-slate-500">${minT}</td></tr>`;
+      });
+      document.getElementById(id).innerHTML = html;
+    }
+
+    function renderGridAnalysis(data, chartId, onId, offId) {
+      let offTime = 0; for(let i=1; i<data.length; i++) { let diff = (data[i].ts - data[i-1].ts) / 1000 / 60; if(diff > 11) offTime += diff; }
+      let totalSpan = (data[data.length-1].ts - data[0].ts) / 1000 / 60; let onTime = Math.max(0, totalSpan - offTime);
+      let onHrs = (onTime/60).toFixed(1); let offHrs = (offTime/60).toFixed(1);
+      document.getElementById(onId).innerText = `${onHrs}h`; document.getElementById(offId).innerText = `${offHrs}h`;
+      const isDark = document.documentElement.classList.contains('dark');
+      if(chartInst[chartId]) chartInst[chartId].destroy();
+      chartInst[chartId] = new ApexCharts(document.querySelector("#"+chartId), {
+         series: [parseFloat(onHrs), parseFloat(offHrs)], chart: {type: 'donut', height: 250, foreColor: isDark?'#cbd5e1':'#374151'},
+         labels: ['On-Grid', 'Off-Grid'], colors: ['#16a34a', '#dc2626'], legend: {position: 'bottom'}, stroke: { show: false }
+      });
+      chartInst[chartId].render();
+    }
+
+    function fetchDetailedYearly() {
+      toggleLoader(true);
+      google.script.run.withSuccessHandler(res => { renderYearly(res.data); toggleLoader(false); }).getDetailedYearlyReport();
+    }
+
+
+        function renderYearly(data) {
+      if(!data || data.length===0) return;
+      globalData = data; 
+      let years = [...new Set(data.map(d => d.year))].sort();
+      let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      
+      let pivotC = {}, pivotE = {};
+      let totals = {};
+
+      // 20 Distinct Colors Palette
+      const palette = [
+        '#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', 
+        '#db2777', '#0891b2', '#4d7c0f', '#4f46e5', '#ea580c', 
+        '#0d9488', '#c026d3', '#e11d48', '#059669', '#ca8a04', 
+        '#475569', '#9333ea', '#0284c7', '#be123c', '#57534e'
+      ];
+
+      years.forEach(y => { 
+          pivotC[y] = new Array(12).fill(0); 
+          pivotE[y] = new Array(12).fill(0); 
+          totals[y] = { cost: 0, eng: 0 }; 
+      });
+
+      data.forEach(d => { 
+          pivotC[d.year][d.monthIdx] = d.cost; 
+          pivotE[d.year][d.monthIdx] = d.energy;
+          totals[d.year].cost += d.cost;
+          totals[d.year].eng += d.energy;
+      });
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#cbd5e1' : '#374151';
+
+      let seriesCost = years.map(y => ({ name: y.toString(), data: pivotC[y] }));
+      let seriesEng = years.map(y => ({ name: y.toString(), data: pivotE[y] }));
+      
+      // Select subset of colors for current years
+      let activeColors = years.map((_, i) => palette[i % palette.length]);
+
+      renderBarGroup('chart-yr-cost', seriesCost, months, false, textColor, activeColors);
+      renderBarGroup('chart-yr-eng', seriesEng, months, true, textColor, activeColors);
+
+      // --- TABLE HEADER (UPDATED WITH COLORS) ---
+      let thead = `<thead class="bg-slate-50 dark:bg-slate-700 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400"><tr><th class="px-6 py-3 text-left tracking-wider">Month</th>`;
+      years.forEach((y, i) => {
+          // Color logic for header
+          let color = activeColors[i];
+          thead += `<th class="px-6 py-3 text-right tracking-wider" style="color:${color}">${y} Cost</th><th class="px-6 py-3 text-right tracking-wider" style="color:${color}">${y} kWh</th>`;
+      });
+      thead += `</tr></thead>`;
+      document.getElementById('yearly-table-head').innerHTML = thead;
+      
+      let tbody = "";
+      months.forEach((m, i) => {
+         let row = `<tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><td class="px-6 py-3 font-medium text-slate-700 dark:text-slate-200">${m}</td>`;
+         years.forEach(y => { 
+            let c = pivotC[y][i]; 
+            let e = pivotE[y][i];
+            
+            let cStr = c > 0 ? '₦' + c.toLocaleString() : '-';
+            let eStr = e > 0 ? e.toFixed(1) : '-';
+            
+            let cClass = c > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-300 dark:text-slate-600';
+            let eClass = e > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-300 dark:text-slate-600';
+
+            row += `<td class="px-6 py-3 text-right font-bold ${cClass}">${cStr}</td><td class="px-6 py-3 text-right font-bold ${eClass}">${eStr}</td>`; 
+         });
+         row += `</tr>`;
+         tbody += row;
+      });
+
+      let totalRow = `<tr class="bg-slate-200 dark:bg-slate-900 font-bold border-t-2 border-slate-300 dark:border-slate-600 text-sm"><td class="px-6 py-4 uppercase text-slate-800 dark:text-slate-300">TOTAL</td>`;
+      years.forEach(y => {
+          totalRow += `<td class="px-6 py-4 text-right text-slate-900 dark:text-slate-200 text-base">₦${totals[y].cost.toLocaleString()}</td><td class="px-6 py-4 text-right text-slate-900 dark:text-slate-200 text-base">${totals[y].eng.toFixed(1)} kWh</td>`;
+      });
+      totalRow += `</tr>`;
+      tbody += totalRow;
+
+      document.getElementById('yearly-table-body').innerHTML = tbody;
+    }
+
+    function loadSettings() { 
+        google.script.run.withSuccessHandler(s => { 
+            document.getElementById('set-vol').value = s.highVol; 
+            document.getElementById('set-low-vol').value = s.lowVol; 
+            document.getElementById('set-pow').value = s.highPow; 
+            document.getElementById('set-temp').value = s.highTemp;
+            document.getElementById('set-budget').value = s.budget; // Load Budget
+        }).getAlertSettings(); 
+    }
+    
+    function saveSettings() { 
+        let s = { 
+            highVol: document.getElementById('set-vol').value, 
+            lowVol: document.getElementById('set-low-vol').value, 
+            highPow: document.getElementById('set-pow').value, 
+            highTemp: document.getElementById('set-temp').value,
+            budget: document.getElementById('set-budget').value // Save Budget
+        }; 
+        google.script.run.withSuccessHandler(() => { alert("Saved!"); refreshData(); }).saveAlertSettings(s); 
+    }
+    
+    function loadAlerts() { google.script.run.withSuccessHandler(res => { let html = ""; res.logs.forEach(l => { let c = l.type.includes("Voltage")?"text-blue-600 dark:text-blue-400":"text-red-600 dark:text-red-400"; html += `<tr><td class="text-xs text-slate-500">${l.time}</td><td class="font-bold ${c}">${l.type}</td><td>${l.val}</td><td class="text-xs text-slate-500">${l.msg}</td></tr>`; }); document.getElementById('alert-table-body').innerHTML = html||"<tr><td colspan='4'>No alerts</td></tr>"; }).getAlertLogs(); }
+
+    function exportCSV(type) {
+       if(!globalData || globalData.length === 0) return alert("No data");
+       let csv = "data:text/csv;charset=utf-8,";
+       if(type === 'charts') { csv += "Time,Vol,Cur,Pow,Eng,Cost\n"; globalData.forEach(r => csv += `${r.tsStr},${r.vol},${r.cur},${r.pow},${r.eng},${r.cost}\n`); }
+       else { csv += "Year,Month,Cost,Eng\n"; globalData.forEach(r => csv += `${r.year},${r.monthIdx+1},${r.cost},${r.energy}\n`); }
+       const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `report_${type}.csv`; document.body.appendChild(link); link.click();
+    }
+
+    function renderApex(id, name, color, data, key, textColor) {
+      if(chartInst[id]) chartInst[id].destroy();
+      chartInst[id] = new ApexCharts(document.querySelector("#"+id), {
+        series: [{ name: name, data: data.map(d => [d.ts, d[key]]) }],
+        chart: { type: 'area', height: 250, toolbar:{show:false}, animations: {enabled:false}, foreColor: textColor },
+        stroke: { curve: 'smooth', width: 2 }, fill: { type: 'gradient', gradient: { opacityFrom: 0.5, opacityTo: 0.1 } },
+        colors: [color], xaxis: { type: 'datetime', tooltip: {enabled:false} },
+        tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', x: {format: 'dd MMM HH:mm'} }
+      });
+      chartInst[id].render();
+    }
+    
+    function renderBar(id, cats, data, color, textColor) {
+       if(chartInst[id]) chartInst[id].destroy();
+       chartInst[id] = new ApexCharts(document.querySelector("#"+id), {
+          series: [{name:'Value', data:data}], chart: {type:'bar', height:250, toolbar:{show:false}, foreColor: textColor},
+          colors: [color], xaxis: {categories:cats}, plotOptions: {bar: {borderRadius:4}},
+          tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' }
+       });
+       chartInst[id].render();
+    }
+
+    // --- UPDATED RENDER BAR GROUP (ACCEPTS COLORS) ---
+     function renderBarGroup(id, series, cats, isEnergy, textColor, colors) {
+       if(chartInst[id]) chartInst[id].destroy();
+       
+       chartInst[id] = new ApexCharts(document.querySelector("#"+id), {
+          series: series, chart: {type:'bar', height:300, toolbar:{show:false}, foreColor: textColor}, 
+          xaxis: {categories:cats}, 
+          colors: colors, // Uses the active 20-color palette slice
+          plotOptions: {bar: {borderRadius:4, columnWidth: '60%'}},
+          dataLabels: {enabled:false}, 
+          yaxis: { labels: { formatter: (val) => isEnergy ? val.toFixed(2) : val.toLocaleString() } },
+          tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' }
+       });
+       chartInst[id].render();
+    }
+  </script>
+</body>
+</html>
