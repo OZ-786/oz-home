@@ -1,765 +1,1246 @@
+<!--
+=========================================================
+* Argon Dashboard 2 - v2.0.4
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WaliTech HomeMetrics Pro</title>
-  <!-- Tailwind CSS & Dark Mode -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { colors: { slate: { 750: '#293548', 850: '#1e293b', 950: '#0f172a' } } } }
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    .dark ::-webkit-scrollbar-thumb { background: #475569; }
-    .sidebar-link { display: flex; align-items: center; padding: 12px 16px; border-radius: 8px; transition: all 0.2s; cursor: pointer; margin-bottom: 4px; font-weight: 500; }
-    .sidebar-link:hover { background-color: #e2e8f0; color: #0f172a; }
-    .dark .sidebar-link:hover { background-color: #334155; color: #f1f5f9; }
-    .sidebar-link.active { background-color: #2563eb; color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
-    .card { border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); position: relative; transition: background-color 0.3s; }
-    .status-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem; }
-    .status-on { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    .status-off { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-    .blink { animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-    .mobile-menu-closed { transform: translateX(-100%); }
-    .mobile-menu-open { transform: translateX(0); }
-    .data-table th { padding: 10px; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
-    .data-table td { padding: 10px; border-bottom-width: 1px; font-size: 0.85rem; }
-    .zoom-btn { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; transition: all 0.2s; border-width: 1px; }
-    .zoom-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
-    .stat-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-    .stat-val { font-size: 1.25rem; font-weight: 800; }
-    .stat-unit { font-size: 0.75rem; font-weight: 600; margin-left: 2px; }
-    .sidebar-collapsed { width: 0; opacity: 0; overflow: hidden; }
-    .sidebar-expanded { width: 280px; opacity: 1; }
-    .touch-action-none { touch-action: none; }
-    @media (max-width: 768px) {
-      .card { padding: 12px; }
-      .stat-val { font-size: 1.1rem; }
-      .chart-container { height: 250px !important; }
-      #page-dashboard .grid-cols-5 { grid-template-columns: repeat(2, 1fr); }
-      .header-content { margin-left: 56px; } /* Space for the menu button */
-    }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>
+    Argon Dashboard 2 by Creative Tim
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="./assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
 </head>
-<body class="flex h-screen overflow-hidden text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 transition-colors duration-300">
 
-  <script>
-    // *** PASTE GOOGLE SCRIPT URL HERE ***
-    const API_URL = "https://script.google.com/macros/s/AKfycbxH13m5DXcyBH2BZ0qp1H3GovZCXEDRbjnD5yzj_KZL3O_MAGXG9PKu8dQdyDHhX0Vi_A/exec";
 
-    const google = {
-      script: {
-        run: {
-          withSuccessHandler: function(onSuccess) {
-            return {
-              getDashboardState: () => callApi('getDashboardState', {}, onSuccess),
-              getMonthData: (sheet) => callApi('getMonthData', {sheet: sheet}, onSuccess),
-              getDetailedYearlyReport: () => callApi('getDetailedYearlyReport', {}, onSuccess),
-              getYearlyGridStats: (year) => callApi('getYearlyGridStats', {year: year}, onSuccess),
-              getAlertSettings: () => callApi('getAlertSettings', {}, onSuccess),
-              getAlertLogs: () => callApi('getAlertLogs', {}, onSuccess),
-              saveAlertSettings: (s) => callApi('saveAlertSettings', {data: JSON.stringify(s)}, onSuccess)
-            };
-          }
-        }
-      }
-    };
-    function callApi(action, params, callback) {
-      const url = new URL(API_URL);
-      url.searchParams.append("action", action);
-      for (const key in params) url.searchParams.append(key, params[key]);
-      fetch(url).then(r => r.json()).then(d => { if(callback) callback(d); }).catch(e => console.error("API Error", e));
-    }
-  </script>
 
-  <div id="main-loader" class="hidden absolute inset-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm flex items-center justify-center">
-    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-      <i class="fa-solid fa-circle-notch fa-spin text-blue-600 text-2xl"></i><span class="font-bold text-slate-700 dark:text-slate-200">Processing...</span>
-    </div>
-  </div>
 
-  <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden"></div>
 
-  <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col z-30 transition-all duration-300 ease-in-out mobile-menu-closed md:relative md:translate-x-0 md:w-64">
-    <div class="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 justify-between">
-      <div class="flex items-center"><i class="fa-solid fa-bolt text-blue-600 text-xl mr-2"></i><span class="font-bold text-lg text-slate-800 dark:text-white">WaliTech</span></div>
-      <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
-    </div>
-    <div class="p-4 flex-1 overflow-y-auto text-slate-600 dark:text-slate-400">
-      <p class="px-4 text-xs font-bold text-slate-400 uppercase mb-2 mt-2">Monitoring</p>
-      <a onclick="showPage('dashboard')" id="nav-dashboard" class="sidebar-link active"><i class="fa-solid fa-gauge w-5 mr-3"></i> Dashboard</a>
-       <div>
-        <div onclick="toggleChartsMenu()" class="sidebar-link justify-between cursor-pointer select-none">
-           <div class="flex items-center"><i class="fa-solid fa-chart-line w-5 mr-3"></i> Charts</div>
-           <i id="charts-arrow" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
-        </div>
-        <div id="charts-submenu" class="hidden flex-col pl-9 pr-2 space-y-1 mb-2">
-           <a href="Historical_Chart.html" class="block py-2 px-3 text-sm rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 transition">
-             Historical Chart
-           </a>
-           <a href="Chart_Analytics.html" class="block py-2 px-3 text-sm rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 transition">
-             Chart Analytics
-           </a>
-        </div>
-      </div>
-      <p class="px-4 text-xs font-bold text-slate-400 uppercase mb-2 mt-6">Reports</p>
-      <a onclick="showPage('analysis')" id="nav-analysis" class="sidebar-link"><i class="fa-solid fa-magnifying-glass-chart w-5 mr-3"></i> Smart Analysis</a>
-      <a onclick="showPage('yearly')" id="nav-yearly" class="sidebar-link"><i class="fa-solid fa-calendar-days w-5 mr-3"></i> Yearly Report</a>
-      <p class="px-4 text-xs font-bold text-slate-400 uppercase mb-2 mt-6">System</p>
-      <a onclick="showPage('alerts')" id="nav-alerts" class="sidebar-link"><i class="fa-solid fa-bell w-5 mr-3"></i> Settings & Alerts</a> 
-      <a href="https://oz-786.github.io/DashBoard_HomeMetric/" target="_blank" class="sidebar-link">
-      <i class="fa-solid fa-microchip w-5 mr-3"></i> Old Dashboard
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	var lastUpdtTime;
+	var d;
+	var alertDone = false;
+$(document).ready(function() {
+	getUpdates();
+	// check for new updates
+	setInterval('getUpdates()',10000);
+
+	setInterval('liveTimerUpdtFun()',10000);
+});
+
+function getUpdates() {
+	// get the data with a webservice call
+	$("#entry_id").css('color', '#f44b4b');
+
+	$.getJSON('https://api.thingspeak.com/channels/1888103/feeds/last', function(data) {
+
+			// if the field1 has data update the page
+
+			d = new Date(data.created_at);
+
+	$("#created_at").html(d.toDateString() + " " + d.toLocaleTimeString()).css("fontSize", 15);
+	$("#entry_id").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id1").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id2").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id3").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id4").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id5").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id6").html(data.entry_id).css("fontSize", 15);
+  $("#entry_id7").html(data.entry_id).css("fontSize", 15);
+
+		if (data.field1!=null){
+     $("#field1").html(data.field1).css("fontSize", 15);
+	}
+	else{
+	$("#field1").html("OFFLINE").css("fontSize", 15);	
+	}
+
+
+  //dummy voltage
+	if (data.field1!=null){
+     $("#field15").html(data.field1).css("fontSize", 15);
+	}
+	else{
+	$("#field15").html("OFFLINE").css("fontSize", 15);	
+	}
+  // end dv
+
+	if (data.field2!=null){
+     $("#field2").html(data.field2).css("fontSize", 15);
+	}
+	else{
+	$("#field2").html("OFFLINE").css("fontSize", 15);	
+	}
+
+
+  //dummy POWER
+	if (data.field2!=null){
+     $("#field25").html(data.field2).css("fontSize", 15);
+	}
+	else{
+	$("#field25").html("OFFLINE").css("fontSize", 15);	
+	}
+  // end dP
+
+
+		if (data.field3!=null){
+     $("#field3").html(data.field3).css("fontSize", 15);
+	}
+	else{
+	$("#field3").html("OFFLINE").css("fontSize", 15);	
+	}
+   //dummy FREQUENCY
+	if (data.field3!=null){
+     $("#field35").html(data.field3).css("fontSize", 15);
+	}
+	else{
+	$("#field35").html("OFFLINE").css("fontSize", 15);	
+	}
+  // end df
+
+		if (data.field4!=null){
+     $("#field4").html(data.field4).css("fontSize", 15);
+	}
+	else{
+	$("#field4").html("OFFLINE").css("fontSize", 15);	
+	}
+  //dummy energy
+
+  if (data.field4!=null){
+     $("#field45").html(data.field4).css("fontSize", 15);
+	}
+	else{
+	$("#field45").html("OFFLINE").css("fontSize", 15);	
+	}
+  //enf de
+
+		if (data.field5!=null){
+     $("#field5").html(data.field5).css("fontSize", 15);
+	}
+	else{
+	$("#field5").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field6!=null){
+     $("#field6").html(data.field6).css("fontSize", 15);
+	}
+	else{
+	$("#field6").html("OFFLINE").css("fontSize", 15);	
+	}
+
+		if (data.field7!=null){
+     $("#field7").html(data.field7).css("fontSize", 15);
+	}
+	else{
+	$("#field7").html("OFFLINE").css("fontSize", 15);	
+	}
+		
+	if (data.field8!=null){
+     $("#field8").html(data.field8).css("fontSize", 15);
+	}
+	else{
+	$("#field8").html("OFFLINE").css("fontSize", 15);	
+	}
+
+
+	$("#entry_id").css('color', 'green');
+  $("#entry_id1").css('color', 'red');
+  $("#entry_id2").css('color', 'green');
+  $("#entry_id3").css('color', 'red');
+  $("#entry_id4").css('color', 'green');
+  $("#entry_id5").css('color', 'red');
+  $("#entry_id6").css('color', 'green');
+  $("#entry_id7").css('color', 'red');
+  
+
+
+
+lastUpdtTime = (new Date()).getTime();
+	}).fail(function() { 
+		$("#entry_id").html("Error while retrieving information!").css("fontSize", 15);
+		$("#entry_id").css('color', 'green');
+		});
+}
+
+function liveTimerUpdtFun() {
+	// drowser requst time past
+	if(lastUpdtTime!=null){
+	var timepass = ((new Date().getTime() - lastUpdtTime)/1000);
+	$("#UpdtIn").html("Last request: " + Math.round(timepass)+ " Sec ago").css("fontSize", 15);
+	$("#UpdtIn").css('color', '#40ef8c');
+
+     // data freshness warning
+     var Freshness = ((new Date().getTime()-d)/1000);
+	 if(alertDone==false && Freshness>4600){
+	 alert('The data '+ Math.round(Freshness) + ' Sec old. SmartHome is probably offline!');
+	 alertDone=true;
+	 }
+	 // data freshness info
+	 if(Freshness<=timepass){
+	 $("#IsDataFresh").html("Last data upload: less than 10 sec. ago").css("fontSize", 15);
+	 }else{
+     $("#IsDataFresh").html("Last data upload: " + Math.round(Freshness) + " Sec ago").css("fontSize", 15);
+	 }
+	 $("#IsDataFresh").css('color', '#40b7ef');
+	
+	}
+}
+</script>
+
+<script>
+  // Get a reference to the div
+  var myDiv = document.getElementById('myDive');
+
+  // Create an iframe element
+  var iframe = document.createElement('iframe');
+
+  // Set the source (URL) of the web page you want to load
+  iframe.src = 'https://oz-786.github.io/oz-home/temp.html';
+
+  // Set the attributes of the iframe (you can customize these as needed)
+  iframe.width = '100%';
+  iframe.height = '500px';
+
+  // Append the iframe to the div
+  myDiv.appendChild(iframe);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body class="g-sidenav-show   bg-gray-100">
+  <div class="min-height-300 bg-primary position-absolute w-100"></div>
+  <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
+        <img src="./assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-1 font-weight-bold">HomeMetrics</span>
       </a>
     </div>
-    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-       <button onclick="toggleTheme()" class="w-full mb-4 border border-slate-300 dark:border-slate-600 rounded-lg py-2 text-sm font-bold flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-        <i class="fa-solid fa-moon"></i> <span>Theme</span>
-       </button>
-       <div class="flex items-center justify-between mb-1"><span class="text-xs font-bold text-slate-500">SYSTEM STATUS</span><button onclick="refreshData()" class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-rotate"></i></button></div>
-       <div id="side-status-text" class="text-sm font-bold text-slate-400">Checking...</div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" href="./pages/dashboard.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard</span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/tables.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Tables</span>
+          </a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link " href="./pages/billing.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Billing</span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/virtual-reality.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-app text-info text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Virtual Reality</span>
+          </a>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/rtl.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">RTL</span>
+          </a>
+        </li> -->
+        <!-- <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/profile.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Profile</span>
+          </a>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link " href="../pages/sign-in.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Sign In</span>
+          </a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link " href="./pages/sign-up.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-collection text-info text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Sign Up</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="sidenav-footer mx-3 ">
+      <div class="card card-plain shadow-none" id="sidenavCard">
+        <img class="w-50 mx-auto" src="./assets/img/illustrations/icon-documentation.svg" alt="sidebar_illustration">
+        <div class="card-body text-center p-3 w-100 pt-0">
+          <div class="docs-info">
+            <h6 class="mb-0">Need help?</h6>
+            <p class="text-xs font-weight-bold mb-0">Please send a message</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard" target="_blank" class="btn btn-success btn-sm w-100 mb-3"><i class="fa fa-whatsapp fa-lightbulb me-sm-1"></i>whatsapp</a>
+      <a class="btn btn-primary btn-sm mb-0 w-100" href="https://www.creative-tim.com/product/argon-dashboard-pro?ref=sidebarfree" type="button"><i class="fa fa-twitter fa-lightbulb me-sm-1"></i>twitter</a>
     </div>
   </aside>
-
-  <main id="main-content" class="flex-1 flex flex-col min-w-0 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 overflow-auto touch-action-none">
-    <!-- Mobile Menu Toggle Button (Now inside header) -->
-    <button
-      id="mobile-menu-toggle"
-      onclick="toggleMobileMenu()"
-      class="md:hidden fixed top-3 left-3 z-40 
-            bg-blue-10 text-black 
-            p-2 rounded-md 
-            shadow-sm hover:shadow 
-            transition"
-    >
-      <i class="fa-solid fa-bars text-sm"></i>
-    </button>
-
-
-    <header class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-4 pl-16 md:pl-4 z-10 transition-colors duration-300">
-      <div class="flex items-center header-content">
-        <h1 class="text-lg font-bold text-slate-800 dark:text-white" id="page-title">Dashboard</h1>
-      </div>
-      <div class="flex items-center gap-3">
-        <div id="selector-container" class="hidden flex gap-2">
-           <select id="sheetSelector" onchange="fetchMonthData()" class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white text-sm rounded-lg p-2 outline-none"><option>Loading...</option></select>
-        </div>
-        <div id="top-status-badge" class="status-badge status-off"><i class="fa-solid fa-circle text-[6px] mr-2"></i> OFFLINE</div>
-      </div>
-    </header>
-
-    <div class="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 scroll-smooth relative">
-      
-      <!-- 1. DASHBOARD -->
-      <div id="page-dashboard" class="space-y-4 md:space-y-6 animate-fade">
-        <div class="flex justify-between items-start md:items-end mb-4 flex-col md:flex-row gap-2">
-          <div><h2 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Live Overview</h2><p class="text-sm text-slate-500 dark:text-slate-400">Real-time parameters.</p></div>
-          <div class="text-left md:text-right"><div class="text-xs font-bold text-slate-400 uppercase">Last Data</div><div id="last-updated-main" class="text-sm font-mono font-bold text-blue-600 dark:text-blue-400">--</div></div>
-        </div>
-
-        <!-- Budget & Eco Row (Fixed) -->
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-4 md:mb-6">
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700">
-            <div class="flex justify-between items-center mb-2"><h3 class="font-bold text-slate-700 dark:text-slate-200">Monthly Budget</h3><span class="text-xs font-bold text-slate-400" id="budget-text">0% Used</span></div>
-            <div class="w-full bg-slate-200 rounded-full h-4 dark:bg-slate-700"><div id="budget-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
-            <div class="flex justify-between mt-2 text-xs"><span id="curr-spend" class="font-bold text-slate-600 dark:text-slate-400">₦0</span><span class="text-slate-400">Target: ₦<span id="budget-target-display">50,000</span></span></div>
-          </div>
-          <div class="card bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 flex items-center justify-between">
-            <div><div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase">Carbon Footprint</div><div class="text-xl md:text-2xl font-bold text-emerald-800 dark:text-emerald-200"><span id="co2-val">0</span> <span class="text-sm">kg</span></div><div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1"><i class="fa-solid fa-tree"></i> Offset by <span id="tree-val">0</span> trees</div></div><i class="fa-solid fa-leaf text-3xl md:text-4xl text-emerald-200 dark:text-emerald-800"></i>
-          </div>
-        </div>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-blue-500"><div class="stat-label text-slate-400">Voltage</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-vol">0</span><span class="stat-unit text-slate-500">V</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-purple-500"><div class="stat-label text-slate-400">Current</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-cur">0</span><span class="stat-unit text-slate-500">A</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-orange-500"><div class="stat-label text-slate-400">Power</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-pow">0</span><span class="stat-unit text-slate-500">W</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-teal-500"><div class="stat-label text-slate-400">Freq</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-freq">0</span><span class="stat-unit text-slate-500">Hz</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-indigo-500"><div class="stat-label text-slate-400">PF</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-pf">0.00</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-yellow-500"><div class="stat-label text-slate-400">Month Energy</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-m-eng">0</span><span class="stat-unit text-slate-500">kWh</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-green-500"><div class="stat-label text-slate-400">Month Cost</div><div class="stat-val text-green-600 dark:text-green-400" id="d-m-cost">₦0.00</div></div>
-          <div class="card border-l-4 border-slate-600 bg-slate-800 dark:bg-slate-700 text-white col-span-2 md:col-span-1 lg:col-span-1"><div class="stat-label text-slate-400">Projected Bill</div><div class="stat-val text-white" id="d-pred-cost">...</div><div class="text-xs text-slate-400 mt-1" id="d-pred-desc">Calculating...</div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-yellow-600"><div class="stat-label text-slate-400">Year Energy</div><div class="stat-val text-slate-800 dark:text-white"><span id="d-y-eng">0</span><span class="stat-unit text-slate-500">kWh</span></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-green-700"><div class="stat-label text-slate-400">Year Cost</div><div class="stat-val text-green-800 dark:text-green-500" id="d-y-cost">₦0.00</div></div>
-        </div>
-      </div>
-
-      <!-- 3. ANALYSIS -->
-      <div id="page-analysis" class="hidden space-y-4 md:space-y-6">
-        <div class="flex justify-between items-center flex-col md:flex-row gap-2"><h2 class="text-xl font-bold text-slate-800 dark:text-white">Smart Analysis</h2><button onclick="exportCSV('analysis')" class="zoom-btn bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600"><i class="fa-solid fa-download mr-1"></i> Export</button></div>
-        
-        <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Power Usage Intensity (Heatmap)</h3><div id="chart-heatmap" class="chart-container h-64 md:h-80"></div></div>
-
-        <!-- RESTORED: Weekly Breakdown -->
-        <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700">
-           <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Weekly Breakdown</h3>
-           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-              <div class="lg:col-span-2"><div id="chart-weekly-bar" class="chart-container h-56 md:h-64"></div></div>
-              <div class="overflow-x-auto"><table class="w-full text-sm data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Week</th><th>Cost</th><th>Energy</th></tr></thead><tbody id="table-weekly-rows" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div>
-           </div>
-        </div>
-
-        <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 border-b dark:border-slate-700 pb-2">Grid Reliability (Month)</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-center"><div class="col-span-1 flex justify-center"><div id="chart-grid-donut" class="chart-container"></div></div><div class="col-span-2 grid grid-cols-2 gap-4"><div class="bg-green-50 dark:bg-green-900/30 p-4 rounded border border-green-100 dark:border-green-800"><div class="text-xs font-bold text-green-700 dark:text-green-400 uppercase">On-Grid</div><div id="grid-on-txt" class="text-xl font-bold text-green-700 dark:text-green-400">--</div></div><div class="bg-red-50 dark:bg-red-900/30 p-4 rounded border border-red-100 dark:border-red-800"><div class="text-xs font-bold text-red-700 dark:text-red-400 uppercase">Off-Grid</div><div id="grid-off-txt" class="text-xl font-bold text-red-700 dark:text-red-400">--</div></div></div></div></div>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-2">Last 24h Peaks</h3><div class="overflow-x-auto"><table class="w-full data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Param</th><th>High</th><th>Time</th><th>Low</th><th>Time</th></tr></thead><tbody id="table-24h" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div></div>
-          <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-2">Last 48h Peaks</h3><div class="overflow-x-auto"><table class="w-full data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Param</th><th>High</th><th>Time</th><th>Low</th><th>Time</th></tr></thead><tbody id="table-48h" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div></div>
-        </div>
-      </div>
-
-      <!-- 4. YEARLY -->
-      <div id="page-yearly" class="hidden space-y-4 md:space-y-6">
-         <div class="flex justify-between items-center flex-col md:flex-row gap-2"><h2 class="text-xl font-bold text-slate-800 dark:text-white">Yearly Comparison</h2><button onclick="exportCSV('yearly')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-bold shadow"><i class="fa-solid fa-file-export mr-1"></i> Export</button></div>
-         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 lg:col-span-2"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Cost Comparison</h3><div id="chart-yr-cost" class="chart-container h-64 md:h-80"></div></div>
-            <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 lg:col-span-2"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Energy Comparison</h3><div id="chart-yr-eng" class="chart-container h-64 md:h-80"></div></div>
-         </div>
-         <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Detailed Breakdown</h3><div class="overflow-x-auto"><table class="w-full text-sm text-left data-table text-slate-700 dark:text-slate-300"><thead id="yearly-table-head" class="bg-slate-100 dark:bg-slate-700"></thead><tbody id="yearly-table-body" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div></div>
-      </div>
-
-      <!-- 5. SETTINGS & ALERTS -->
-      <div id="page-alerts" class="hidden space-y-4 md:space-y-6">
-         <h2 class="text-xl font-bold text-slate-800 dark:text-white">Settings & Alerts</h2>
-         <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700 border-l-4 border-l-red-500">
-            <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4">System Thresholds</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
-               <div><label class="text-xs font-bold text-slate-500">Max Voltage</label><input id="set-vol" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white text-sm"></div>
-               <div><label class="text-xs font-bold text-slate-500">Min Voltage</label><input id="set-low-vol" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white text-sm"></div>
-               <div><label class="text-xs font-bold text-slate-500">Max Power</label><input id="set-pow" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white text-sm"></div>
-               <div><label class="text-xs font-bold text-slate-500">Max Temp</label><input id="set-temp" type="number" class="w-full border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white text-sm"></div>
-               
-               <!-- NEW: BUDGET INPUT -->
-               <div class="md:col-span-4 border-t pt-4 dark:border-slate-600">
-                  <label class="text-xs font-bold text-slate-500">Monthly Budget Target (₦)</label>
-                  <input id="set-budget" type="number" class="w-full md:w-1/3 border p-2 rounded mt-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white text-sm" placeholder="50000">
-               </div>
-
+  <main class="main-content position-relative border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
+            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li>
+          </ol>
+          <h6 class="font-weight-bolder text-white mb-0">Dashboard</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+            <div class="input-group">
+              <div class="form-check form-switch ps-0 ms-auto my-auto">
+                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
+              </div>
             </div>
-            <button onclick="saveSettings()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-blue-700 w-full md:w-auto">Save System Settings</button>
-         </div>
-         <div class="card bg-white dark:bg-slate-800 border dark:border-slate-700"><div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-700 dark:text-slate-200">Alert History</h3><button onclick="loadAlerts()" class="text-blue-600"><i class="fa-solid fa-rotate"></i></button></div><div class="overflow-x-auto h-64 md:h-96"><table class="w-full text-sm text-left data-table text-slate-700 dark:text-slate-300"><thead class="bg-slate-100 dark:bg-slate-700"><tr><th>Time</th><th>Type</th><th>Value</th><th>Message</th></tr></thead><tbody id="alert-table-body" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody></table></div></div>
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+            <li class="nav-item d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
+                <i class="fa fa-regular fa-lightbulb me-sm-1"></i>
+                <span class="d-sm-inline d-none">Dark / light </span>
+              </a>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line bg-white"></i>
+                  <i class="sidenav-toggler-line bg-white"></i>
+                  <i class="sidenav-toggler-line bg-white"></i>
+                </div>
+              </a>
+            </li>
+            <!-- <li class="nav-item px-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0">
+                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+              </a>
+            </li> -->
+            <!-- <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer"></i>
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New message</span> from Laur
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          13 minutes ago
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New album</span> by Travis Scott
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          1 day
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <title>credit-card</title>
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                              <g transform="translate(1716.000000, 291.000000)">
+                                <g transform="translate(453.000000, 454.000000)">
+                                  <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
+                                  <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </svg>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Payment successfully completed
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          2 days
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li> -->
+          </ul>
+        </div>
       </div>
-
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">voltage</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- $53,000 --><span id="field1" > --- </span> v
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-success text-sm font-weight-bolder">+55%</span>
+                      since yesterday
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                    <i class="fa fa-solid fa-bolt text-lg opacity-10" aria-hidden="true"></i>
+                    <!-- <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Power</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- 2,300 --> <span id="field2" > --- </span> w
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-success text-sm font-weight-bolder">+3%</span>
+                      since last week
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-danger shadow-warning text-center rounded-circle">
+                    <i class="fa fa-solid fa-plug opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Frequency</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- +3,462 --> <span id="field3" > --- </span> hz
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-danger text-sm font-weight-bolder">-2%</span>
+                      since last quarter
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                    <i class="fa fa-solid fa-wave-square fa-beat opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-8">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Energy</p>
+                    <h5 class="font-weight-bolder">
+                      <!-- $103,430 --> <span id="field4" > --- </span> Kw/h
+                    </h5>
+                    <p class="mb-0">
+                      <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                    <i class="fa fa-solid fa-charging-station fa-beat-fade opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <iframe src="https://oz-786.github.io/oz-home/temp.html" width="700" height="500" frameborder="0"></iframe>
+        <!-- <div class="col-lg-7 mb-lg-0 mb-4">
+          <div class="card z-index-2 h-100">
+            <div class="card-header pb-0 pt-3 bg-transparent">
+              <h6 class="text-capitalize">Sales overview</h6>
+              <p class="text-sm mb-0">
+                <i class="fa fa-arrow-up text-success"></i>
+                <span class="font-weight-bold">4% more</span> in 2021
+              </p>
+            </div>
+            <div class="card-body p-3">
+              <div class="chart">
+                <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card card-carousel overflow-hidden h-100 p-0">
+            <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+              <div class="carousel-inner border-radius-lg h-100">
+                <div class="carousel-item h-100 active" style="background-image: url('../assets/img/coro1.jpg');
+            background-size: cover;">
+                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                      <i class="ni ni-camera-compact text-dark opacity-10"></i>
+                    </div>
+                    <h5 class="text-white mb-1">Get started with Argon</h5>
+                    <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
+                  </div>
+                </div>
+                <div class="carousel-item h-100" style="background-image: url('../assets/img/coro2.jpg');
+            background-size: cover;">
+                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                      <i class="ni ni-bulb-61 text-dark opacity-10"></i>
+                    </div>
+                    <h5 class="text-white mb-1">Faster way to create web pages</h5>
+                    <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</p>
+                  </div>
+                </div>
+                <div class="carousel-item h-100" style="background-image: url('../assets/img/coro3.jpg');
+            background-size: cover;">
+                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                      <i class="ni ni-trophy text-dark opacity-10"></i>
+                    </div>
+                    <h5 class="text-white mb-1">Share with us your design tips!</h5>
+                    <p>Don’t be afraid to be wrong because you can’t learn anything from a compliment.</p>
+                  </div>
+                </div>
+              </div>
+              <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div> -->
+      </div>
+      <div class="row mt-4">
+        <div class="col-lg-7 mb-lg-0 mb-4">
+          <div class="card ">
+            <div class="card-header pb-0 p-3">
+              <div class="d-flex justify-content-between">
+                <h6 class="mb-2">Live data (right now)</h6>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center ">
+                <tbody>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-voltage-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Voltage</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field15" > --- </span>v</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-substation-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Power</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field25" > --- </span>w</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id1" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-tuning-fork-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Frequency</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field35" > --- </span> HZ</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id2" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-energy-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Energy</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field45" > --- </span> KW/H </h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0" >#<span id="entry_id3" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-cost-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Cost</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0">&#8358; <span id="field8" > --- </span></h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id4" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-comparator-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Current<h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field5" > --- </span> A </h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id5" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-battery-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Power Factor</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field6" > --- </span> &percnt;</h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id6" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <img src="./assets/img/icons/flags/icons8-temperature-23.png" alt="Country flag">
+                        </div>
+                        <div class="ms-4">
+                          <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Temprature</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">live:</p>
+                        <h6 class="text-sm mb-0"><span id="field7" > --- </span> °C </h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0"  >#<span id="entry_id7" > --- </span></h6>
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td class="w-30">
+                      <div class="d-flex px-2 py-1 align-items-center">
+                        <div>
+                          <!-- <img src="../assets/img/icons/flags/US.png" alt="Country flag"> -->
+                        </div>
+                        <div class="ms-4">
+                          <!-- <p class="text-xs font-weight-bold mb-0">DATA</p>
+                          <h6 class="text-sm mb-0">Power</h6> -->
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <p class="text-xs font-weight-bold mb-0">STAMP:</p>
+                        <h6 class="text-sm mb-0"><span id="created_at" > --- </span></h6>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        <!-- <p class="text-xs font-weight-bold mb-0">Update:</p> -->
+                        <!-- <h6 class="text-sm mb-0" style="color: black;" >#<span id="entry_id" > --- </span></h6> -->
+                      </div>
+                    </td>
+                    <!-- <td class="align-middle text-sm">
+                      <div class="col text-center">
+                        <p class="text-xs font-weight-bold mb-0">Update:</p>
+                        <h6 class="text-sm mb-0">29.9%</h6>
+                      </div>
+                    </td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <h6 class="mb-0">Live Charts From Meter</h6>
+            </div>
+            <div class="card-body p-3">
+              <ul class="list-group">
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-temperature-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Temprature chart</h6>
+                      <span class="text-xs">See live  <span class="font-weight-bold">Temp readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/temp.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-substation-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-energy-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Energy chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold"> Energy readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/Energy.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-voltage-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">voltage chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Voltage readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/volt.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-comparator-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Current chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Current readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/Current.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-battery-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power factor chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power Factor readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/PowerFactor.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-tuning-fork-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Frequency chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Frequency readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/frequency.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-cost-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Cost chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Cost readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/cost.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-voltmeter-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">voltage & Current chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Voltage & current readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/voltage_and_current.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-frequency-graph-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power & Frequency chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power & Frequency readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power_and_frequency.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-energy-efficiency-a-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power & energy chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power & energy readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power_and_energy.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
+                  <div class="d-flex align-items-center">
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                      <img src="./assets/img/icons/flags/icons8-positive-dynamic-23.png" alt="Country flag">
+                    </div>
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-1 text-dark text-sm">Power & cost chart</h6>
+                      <span class="text-xs">See live <span class="font-weight-bold">Power & cost readings</span></span>
+                    </div>
+                  </div>
+                  <div class="d-flex">
+                    <button class="btn btn-success btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><a href="https://oz-786.github.io/oz-home/power_and_cost.html"><i class="ni ni-bold-right" aria-hidden="true"></i></a></button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer pt-3  ">
+        <div class="container-fluid">
+          <div class="row align-items-center justify-content-lg-between">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+              <div class="copyright text-center text-sm text-muted text-lg-start">
+                © <script>
+                  document.write(new Date().getFullYear())
+                </script>,
+                made with <i class="fa fa-heart"></i> by
+                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+                for a better web.
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   </main>
-
+ 
+  <!--   Core JS Files   -->
+  <script src="./assets/js/core/popper.min.js"></script>
+  <script src="./assets/js/core/bootstrap.min.js"></script>
+  <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="./assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="./assets/js/plugins/chartjs.min.js"></script>
   <script>
-    let chartInst = {};
-    let globalData = []; 
-    let currentZoomHours = 24;
-    let monthlyBudget = 50000; 
-    let mobileMenuTimeout;
-    let touchStartX = 0;
-    let touchEndX = 0;
+    var ctx1 = document.getElementById("chart-line").getContext("2d");
 
-    window.onload = function() {
-      if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
-      refreshData();
-      setInterval(refreshData, 30000); 
-      loadSettings();
-      setupTouchGestures();
-      setupAutoHideMenu();
-      
-      // Hide mobile menu toggle when sidebar is open
-      const sidebar = document.getElementById('sidebar');
-      const toggleBtn = document.getElementById('mobile-menu-toggle');
-      
-      // Observe sidebar class changes
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.attributeName === 'class') {
-            if (sidebar.classList.contains('mobile-menu-closed')) {
-              toggleBtn.classList.remove('hidden');
-            } else {
-              toggleBtn.classList.add('hidden');
+    var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
+    gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
+    gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
+    new Chart(ctx1, {
+      type: "line",
+      data: {
+        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [{
+          label: "Mobile apps",
+          tension: 0.4,
+          borderWidth: 0,
+          pointRadius: 0,
+          borderColor: "#5e72e4",
+          backgroundColor: gradientStroke1,
+          borderWidth: 3,
+          fill: true,
+          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+          maxBarThickness: 6
+
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: true,
+              drawOnChartArea: true,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              padding: 10,
+              color: '#fbfbfb',
+              font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
             }
-          }
-        });
-      });
-      
-      observer.observe(sidebar, { attributes: true });
-    };
-
-    function setupTouchGestures() {
-      const mainContent = document.getElementById('main-content');
-      
-      mainContent.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-      }, false);
-
-      mainContent.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      }, false);
-    }
-
-    function handleSwipe() {
-      const swipeThreshold = 50;
-      const diff = touchStartX - touchEndX;
-      
-      if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-          // Swipe left - hide menu
-          if (window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('mobile-menu-closed')) {
-            toggleMobileMenu();
-          }
-        } else {
-          // Swipe right - show menu
-          if (window.innerWidth < 768 && document.getElementById('sidebar').classList.contains('mobile-menu-closed')) {
-            toggleMobileMenu();
-          }
-        }
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              color: '#ccc',
+              padding: 20,
+              font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+        },
+      },
+    });
+  </script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
       }
-    }
-
-    function setupAutoHideMenu() {
-      // Auto-hide menu on mobile after 5 seconds of inactivity
-      const sidebar = document.getElementById('sidebar');
-      const mainContent = document.getElementById('main-content');
-      
-      if (window.innerWidth < 768) {
-        mainContent.addEventListener('click', function() {
-          if (!sidebar.classList.contains('mobile-menu-closed')) {
-            clearTimeout(mobileMenuTimeout);
-            mobileMenuTimeout = setTimeout(() => {
-              if (!sidebar.classList.contains('mobile-menu-closed')) {
-                toggleMobileMenu();
-              }
-            }, 5000); // Hide after 5 seconds
-          }
-        });
-        
-        sidebar.addEventListener('mouseenter', function() {
-          clearTimeout(mobileMenuTimeout);
-        });
-        
-        sidebar.addEventListener('mouseleave', function() {
-          if (!sidebar.classList.contains('mobile-menu-closed')) {
-            mobileMenuTimeout = setTimeout(() => {
-              if (!sidebar.classList.contains('mobile-menu-closed')) {
-                toggleMobileMenu();
-              }
-            }, 3000);
-          }
-        });
-      }
-    }
-
-    function toggleTheme() {
-       const html = document.documentElement;
-       if(html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); } 
-       else { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); }
-       if(globalData.length > 0) renderMonth({success:true, data:globalData});
-       fetchDetailedYearly();
-    }
-
-    function toggleLoader(show) { document.getElementById('main-loader').classList.toggle('hidden', !show); }
-    
-    function toggleMobileMenu() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('mobile-overlay');
-      const toggleBtn = document.getElementById('mobile-menu-toggle');
-      
-      sidebar.classList.toggle('mobile-menu-closed');
-      sidebar.classList.toggle('mobile-menu-open');
-      overlay.classList.toggle('hidden');
-      
-      // Reset auto-hide timer when menu is toggled
-      if (!sidebar.classList.contains('mobile-menu-closed')) {
-        clearTimeout(mobileMenuTimeout);
-        mobileMenuTimeout = setTimeout(() => {
-          if (!sidebar.classList.contains('mobile-menu-closed')) {
-            toggleMobileMenu();
-          }
-        }, 5000);
-      }
-    }
-
-    function refreshData() { google.script.run.withSuccessHandler(updateState).getDashboardState(); }
-
-    function updateState(res) {
-      if(!res.success) return;
-      const isOnline = res.status === "ON-GRID";
-      document.getElementById('top-status-badge').className = isOnline ? "status-badge status-on" : "status-badge status-off";
-      document.getElementById('top-status-badge').innerHTML = isOnline ? '<i class="fa-solid fa-circle text-[6px] mr-2 blink"></i> ON-GRID' : '<i class="fa-solid fa-circle text-[6px] mr-2"></i> OFFLINE';
-      document.getElementById('side-status-text').innerText = isOnline ? "Online" : "Offline";
-
-      if(res.budget) { monthlyBudget = parseFloat(res.budget); }
-
-      const sheetSel = document.getElementById('sheetSelector');
-      if(sheetSel.options.length <= 1) {
-        sheetSel.innerHTML = "";
-        res.sheets.forEach(s => { let o = document.createElement('option'); o.value = s; o.text = s; sheetSel.appendChild(o); });
-      }
-
-      if(res.latest) {
-        const l = res.latest;
-        document.getElementById('last-updated-main').innerText = l.ts;
-        setTxt('d-vol', l.vol); setTxt('d-cur', l.cur); setTxt('d-pow', Math.round(l.pow)); 
-        setTxt('d-m-eng', l.monthEng.toFixed(2)); 
-        setTxt('d-y-eng', l.yearEng.toFixed(2));
-        setTxt('d-freq', l.freq.toFixed(1)); 
-        setTxt('d-pf', l.pf.toFixed(2));
-        
-        let fmt = new Intl.NumberFormat('en-NG', {style:'currency', currency:'NGN'});
-        document.getElementById('d-m-cost').innerText = fmt.format(l.monthCost);
-        document.getElementById('d-y-cost').innerText = fmt.format(l.yearCost);
-
-        const now = new Date();
-        const dNum = now.getDate();
-        const totalDays = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-        if(dNum > 0) {
-           const dailyAvg = l.monthCost / dNum;
-           const pred = dailyAvg * totalDays;
-           document.getElementById('d-pred-cost').innerText = fmt.format(pred);
-           document.getElementById('d-pred-desc').innerText = `~${fmt.format(dailyAvg)} / day`;
-        }
-
-        if(document.getElementById('budget-bar')) {
-            let spend = l.monthCost;
-            let percent = (spend / monthlyBudget) * 100;
-            if(percent > 100) percent = 100;
-            
-            document.getElementById('budget-bar').style.width = percent + "%";
-            document.getElementById('budget-text').innerText = percent.toFixed(1) + "% Used";
-            document.getElementById('budget-target-display').innerText = monthlyBudget.toLocaleString();
-            document.getElementById('curr-spend').innerText = fmt.format(spend);
-            
-            let bar = document.getElementById('budget-bar');
-            if(percent < 50) bar.className = "bg-green-500 h-4 rounded-full transition-all duration-500";
-            else if(percent < 85) bar.className = "bg-yellow-500 h-4 rounded-full transition-all duration-500";
-            else bar.className = "bg-red-500 h-4 rounded-full transition-all duration-500";
-        }
-
-        if(document.getElementById('co2-val')) {
-            let kwh = l.monthEng;
-            let co2 = kwh * 0.43; 
-            let trees = co2 / 1.75; 
-            document.getElementById('co2-val').innerText = co2.toFixed(1);
-            document.getElementById('tree-val').innerText = trees.toFixed(1);
-        }
-      }
-    }
-
-    function setTxt(id, val) { document.getElementById(id).innerText = val; }
-
-    function toggleChartsMenu() {
-      const menu = document.getElementById('charts-submenu');
-      const arrow = document.getElementById('charts-arrow');
-      
-      if (menu.classList.contains('hidden')) {
-        menu.classList.remove('hidden');
-        menu.classList.add('flex');
-        arrow.style.transform = "rotate(180deg)";
-      } else {
-        menu.classList.add('hidden');
-        menu.classList.remove('flex');
-        arrow.style.transform = "rotate(0deg)";
-      }
-    }
-
-    function showPage(p) {
-      // Close mobile menu when clicking a link (on mobile)
-      if (window.innerWidth < 768) {
-        const sidebar = document.getElementById('sidebar');
-        if (!sidebar.classList.contains('mobile-menu-closed')) {
-          toggleMobileMenu();
-        }
-      }
-      
-      ['dashboard', 'analysis', 'yearly', 'alerts'].forEach(x => {
-        document.getElementById('page-'+x).classList.add('hidden');
-        document.getElementById('nav-'+x).classList.remove('active', 'bg-blue-600', 'text-white');
-      });
-      document.getElementById('page-'+p).classList.remove('hidden');
-      document.getElementById('nav-'+p).classList.add('active');
-      document.getElementById('page-title').innerText = p === "yearly" ? "Yearly Report" : p.charAt(0).toUpperCase() + p.slice(1);
-      
-      document.getElementById('selector-container').classList.add('hidden');
-      document.getElementById('sheetSelector').classList.add('hidden');
-
-      if(p === 'analysis') {
-        document.getElementById('selector-container').classList.remove('hidden');
-        document.getElementById('sheetSelector').classList.remove('hidden');
-        fetchMonthData();
-      } else if (p === 'yearly') {
-        fetchDetailedYearly();
-      } else if (p === 'alerts') {
-        loadAlerts();
-        loadSettings();
-      }
-    }
-
-    function fetchMonthData() {
-      const s = document.getElementById('sheetSelector').value;
-      if(s && s!=="Loading...") { toggleLoader(true); google.script.run.withSuccessHandler(r => { renderMonth(r); toggleLoader(false); }).getMonthData(s); }
-    }
-
-    function setZoom(hours) {
-      toggleLoader(true); 
-      currentZoomHours = hours;
-      document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      setTimeout(() => { if(globalData.length > 0) renderMonth({success:true, data: globalData}); toggleLoader(false); }, 50);
-    }
-
-    function renderMonth(res) {
-      if(!res.success) return;
-      globalData = res.data;
-      const d = res.data;
-      const latestTs = d[d.length-1].ts;
-      const cutoff = latestTs - (currentZoomHours * 3600 * 1000);
-      const filtered = d.filter(x => x.ts > cutoff);
-      const rate = Math.ceil(filtered.length/400); 
-      const cd = filtered.filter((_, i) => i % rate === 0);
-      
-      const isDark = document.documentElement.classList.contains('dark');
-      const textColor = isDark ? '#cbd5e1' : '#374151';
-
-      renderApex('chart-vol', 'Voltage', '#3b82f6', cd, 'vol', textColor);
-      renderApex('chart-pow', 'Power', '#f97316', cd, 'pow', textColor);
-      renderApex('chart-eng', 'Energy', '#eab308', cd, 'eng', textColor);
-
-      const d24 = d.filter(x => (latestTs - x.ts) <= 86400000);
-      const d48 = d.filter(x => (latestTs - x.ts) <= 172800000);
-      populateTable('table-24h', d24);
-      populateTable('table-48h', d48);
-      renderGridAnalysis(d, 'chart-grid-donut', 'grid-on-txt', 'grid-off-txt');
-      renderHeatmap(d, textColor);
-      calculateWeekly(d, textColor);
-    }
-
-    function calculateWeekly(data, textColor) {
-       let weeks = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}};
-       for(let i=1;i<=5;i++) weeks[i] = { costS: 999999, costE: 0, engS: 999999, engE: 0, hasData: false };
-       data.forEach(d => {
-          let date = new Date(d.ts);
-          let w = Math.ceil(date.getDate()/7);
-          if(w>5) w=5; 
-          weeks[w].hasData = true;
-          if(d.cost < weeks[w].costS) weeks[w].costS = d.cost;
-          if(d.cost > weeks[w].costE) weeks[w].costE = d.cost;
-          if(d.eng < weeks[w].engS) weeks[w].engS = d.eng;
-          if(d.eng > weeks[w].engE) weeks[w].engE = d.eng;
-       });
-       let cats = [], series = [], html = "";
-       for(let w=1; w<=5; w++) {
-          let c = 0, e = 0;
-          if(weeks[w].hasData) { c = weeks[w].costE - weeks[w].costS; e = weeks[w].engE - weeks[w].engS; if(c<0) c=weeks[w].costE; }
-          cats.push("W"+w); series.push(c);
-          let fmt = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' });
-          if(weeks[w].hasData) {
-             html += `<tr><td>Week ${w}</td><td class="font-bold text-green-600 dark:text-green-400">${fmt.format(c)}</td><td class="text-slate-500 dark:text-slate-400">${e.toFixed(2)} kWh</td></tr>`;
-          }
-       }
-       document.getElementById('table-weekly-rows').innerHTML = html || "<tr><td colspan='3'>No Data</td></tr>";
-       renderBar('chart-weekly-bar', cats, series, '#22c55e', textColor);
-    }
-
-    function renderHeatmap(data, textColor) {
-       let grid = Array(7).fill().map(() => Array(24).fill(0));
-       let counts = Array(7).fill().map(() => Array(24).fill(0));
-       data.forEach(d => {
-         let date = new Date(d.ts);
-         let day = date.getDay(); 
-         let h = date.getHours();
-         grid[day][h] += d.pow;
-         counts[day][h]++;
-       });
-       for(let d=0; d<7; d++) { for(let h=0; h<24; h++) { if(counts[d][h]>0) grid[d][h] = Math.round(grid[d][h] / counts[d][h]); } }
-       const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-       let series = days.map((day, i) => ({ name: day, data: grid[i].map((v, h) => ({x: h.toString().padStart(2,'0')+":00", y: v})) })).reverse();
-       if(chartInst['heatmap']) chartInst['heatmap'].destroy();
-       chartInst['heatmap'] = new ApexCharts(document.querySelector("#chart-heatmap"), {
-         series: series, chart: { type: 'heatmap', height: 300, toolbar: {show:false}, foreColor: textColor }, dataLabels: { enabled: false },
-         plotOptions: { heatmap: { shadeIntensity: 0.5, colorScale: { ranges: [{from:0, to:100, color:'#10b981', name:'Low'},{from:101, to:400, color:'#facc15', name:'Med'},{from:401, to:10000, color:'#ef4444', name:'High'}] } } }
-       });
-       chartInst['heatmap'].render();
-    }
-
-    function populateTable(id, dataset) {
-      let html = "";
-      [{k:'vol', n:'Volt', u:'V'}, {k:'pow', n:'Power', u:'W'}, {k:'temp', n:'Temp', u:'C'}].forEach(p => {
-         let max = -999, min = 999, maxT = "", minT = "";
-         dataset.forEach(d => { if(d[p.k] > max) { max = d[p.k]; maxT = d.tsStr.split(' ')[1]; } if(d[p.k] < min && d[p.k] > 0) { min = d[p.k]; minT = d.tsStr.split(' ')[1]; } });
-         html += `<tr><td>${p.n}</td><td class="text-red-600 dark:text-red-400 font-bold">${max.toFixed(1)}${p.u}</td><td class="text-xs text-slate-500">${maxT}</td><td class="text-blue-600 dark:text-blue-400 font-bold">${min.toFixed(1)}${p.u}</td><td class="text-xs text-slate-500">${minT}</td></tr>`;
-      });
-      document.getElementById(id).innerHTML = html;
-    }
-
-    function renderGridAnalysis(data, chartId, onId, offId) {
-      let offTime = 0; for(let i=1; i<data.length; i++) { let diff = (data[i].ts - data[i-1].ts) / 1000 / 60; if(diff > 11) offTime += diff; }
-      let totalSpan = (data[data.length-1].ts - data[0].ts) / 1000 / 60; let onTime = Math.max(0, totalSpan - offTime);
-      let onHrs = (onTime/60).toFixed(1); let offHrs = (offTime/60).toFixed(1);
-      document.getElementById(onId).innerText = `${onHrs}h`; document.getElementById(offId).innerText = `${offHrs}h`;
-      const isDark = document.documentElement.classList.contains('dark');
-      if(chartInst[chartId]) chartInst[chartId].destroy();
-      chartInst[chartId] = new ApexCharts(document.querySelector("#"+chartId), {
-         series: [parseFloat(onHrs), parseFloat(offHrs)], chart: {type: 'donut', height: 250, foreColor: isDark?'#cbd5e1':'#374151'},
-         labels: ['On-Grid', 'Off-Grid'], colors: ['#16a34a', '#dc2626'], legend: {position: 'bottom'}, stroke: { show: false }
-      });
-      chartInst[chartId].render();
-    }
-
-    function fetchDetailedYearly() {
-      toggleLoader(true);
-      google.script.run.withSuccessHandler(res => { renderYearly(res.data); toggleLoader(false); }).getDetailedYearlyReport();
-    }
-
-    function renderYearly(data) {
-      if(!data || data.length===0) return;
-      globalData = data; 
-      let years = [...new Set(data.map(d => d.year))].sort();
-      let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      
-      let pivotC = {}, pivotE = {};
-      let totals = {};
-
-      const palette = [
-        '#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', 
-        '#db2777', '#0891b2', '#4d7c0f', '#4f46e5', '#ea580c', 
-        '#0d9488', '#c026d3', '#e11d48', '#059669', '#ca8a04', 
-        '#475569', '#9333ea', '#0284c7', '#be123c', '#57534e'
-      ];
-
-      years.forEach(y => { 
-          pivotC[y] = new Array(12).fill(0); 
-          pivotE[y] = new Array(12).fill(0); 
-          totals[y] = { cost: 0, eng: 0 }; 
-      });
-
-      data.forEach(d => { 
-          pivotC[d.year][d.monthIdx] = d.cost; 
-          pivotE[d.year][d.monthIdx] = d.energy;
-          totals[d.year].cost += d.cost;
-          totals[d.year].eng += d.energy;
-      });
-
-      const isDark = document.documentElement.classList.contains('dark');
-      const textColor = isDark ? '#cbd5e1' : '#374151';
-
-      let seriesCost = years.map(y => ({ name: y.toString(), data: pivotC[y] }));
-      let seriesEng = years.map(y => ({ name: y.toString(), data: pivotE[y] }));
-      
-      let activeColors = years.map((_, i) => palette[i % palette.length]);
-
-      renderBarGroup('chart-yr-cost', seriesCost, months, false, textColor, activeColors);
-      renderBarGroup('chart-yr-eng', seriesEng, months, true, textColor, activeColors);
-
-      let thead = `<thead class="bg-slate-50 dark:bg-slate-700 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400"><tr><th class="px-6 py-3 text-left tracking-wider">Month</th>`;
-      years.forEach((y, i) => {
-          let color = activeColors[i];
-          thead += `<th class="px-6 py-3 text-right tracking-wider" style="color:${color}">${y} Cost</th><th class="px-6 py-3 text-right tracking-wider" style="color:${color}">${y} kWh</th>`;
-      });
-      thead += `</tr></thead>`;
-      document.getElementById('yearly-table-head').innerHTML = thead;
-      
-      let tbody = "";
-      months.forEach((m, i) => {
-         let row = `<tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><td class="px-6 py-3 font-medium text-slate-700 dark:text-slate-200">${m}</td>`;
-         years.forEach(y => { 
-            let c = pivotC[y][i]; 
-            let e = pivotE[y][i];
-            
-            let cStr = c > 0 ? '₦' + c.toLocaleString() : '-';
-            let eStr = e > 0 ? e.toFixed(1) : '-';
-            
-            let cClass = c > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-300 dark:text-slate-600';
-            let eClass = e > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-300 dark:text-slate-600';
-
-            row += `<td class="px-6 py-3 text-right font-bold ${cClass}">${cStr}</td><td class="px-6 py-3 text-right font-bold ${eClass}">${eStr}</td>`; 
-         });
-         row += `</tr>`;
-         tbody += row;
-      });
-
-      let totalRow = `<tr class="bg-slate-200 dark:bg-slate-900 font-bold border-t-2 border-slate-300 dark:border-slate-600 text-sm"><td class="px-6 py-4 uppercase text-slate-800 dark:text-slate-300">TOTAL</td>`;
-      years.forEach(y => {
-          totalRow += `<td class="px-6 py-4 text-right text-slate-900 dark:text-slate-200 text-base">₦${totals[y].cost.toLocaleString()}</td><td class="px-6 py-4 text-right text-slate-900 dark:text-slate-200 text-base">${totals[y].eng.toFixed(1)} kWh</td>`;
-      });
-      totalRow += `</tr>`;
-      tbody += totalRow;
-
-      document.getElementById('yearly-table-body').innerHTML = tbody;
-    }
-
-    function loadSettings() { 
-        google.script.run.withSuccessHandler(s => { 
-            document.getElementById('set-vol').value = s.highVol; 
-            document.getElementById('set-low-vol').value = s.lowVol; 
-            document.getElementById('set-pow').value = s.highPow; 
-            document.getElementById('set-temp').value = s.highTemp;
-            document.getElementById('set-budget').value = s.budget;
-        }).getAlertSettings(); 
-    }
-    
-    function saveSettings() { 
-        let s = { 
-            highVol: document.getElementById('set-vol').value, 
-            lowVol: document.getElementById('set-low-vol').value, 
-            highPow: document.getElementById('set-pow').value, 
-            highTemp: document.getElementById('set-temp').value,
-            budget: document.getElementById('set-budget').value
-        }; 
-        google.script.run.withSuccessHandler(() => { alert("Saved!"); refreshData(); }).saveAlertSettings(s); 
-    }
-    
-    function loadAlerts() { google.script.run.withSuccessHandler(res => { let html = ""; res.logs.forEach(l => { let c = l.type.includes("Voltage")?"text-blue-600 dark:text-blue-400":"text-red-600 dark:text-red-400"; html += `<tr><td class="text-xs text-slate-500">${l.time}</td><td class="font-bold ${c}">${l.type}</td><td>${l.val}</td><td class="text-xs text-slate-500">${l.msg}</td></tr>`; }); document.getElementById('alert-table-body').innerHTML = html||"<tr><td colspan='4'>No alerts</td></tr>"; }).getAlertLogs(); }
-
-    function exportCSV(type) {
-       if(!globalData || globalData.length === 0) return alert("No data");
-       let csv = "data:text/csv;charset=utf-8,";
-       if(type === 'charts') { csv += "Time,Vol,Cur,Pow,Eng,Cost\n"; globalData.forEach(r => csv += `${r.tsStr},${r.vol},${r.cur},${r.pow},${r.eng},${r.cost}\n`); }
-       else { csv += "Year,Month,Cost,Eng\n"; globalData.forEach(r => csv += `${r.year},${r.monthIdx+1},${r.cost},${r.energy}\n`); }
-       const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `report_${type}.csv`; document.body.appendChild(link); link.click();
-    }
-
-    function renderApex(id, name, color, data, key, textColor) {
-      if(chartInst[id]) chartInst[id].destroy();
-      chartInst[id] = new ApexCharts(document.querySelector("#"+id), {
-        series: [{ name: name, data: data.map(d => [d.ts, d[key]]) }],
-        chart: { type: 'area', height: 250, toolbar:{show:false}, animations: {enabled:false}, foreColor: textColor },
-        stroke: { curve: 'smooth', width: 2 }, fill: { type: 'gradient', gradient: { opacityFrom: 0.5, opacityTo: 0.1 } },
-        colors: [color], xaxis: { type: 'datetime', tooltip: {enabled:false} },
-        tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', x: {format: 'dd MMM HH:mm'} }
-      });
-      chartInst[id].render();
-    }
-    
-    function renderBar(id, cats, data, color, textColor) {
-       if(chartInst[id]) chartInst[id].destroy();
-       chartInst[id] = new ApexCharts(document.querySelector("#"+id), {
-          series: [{name:'Value', data:data}], chart: {type:'bar', height:250, toolbar:{show:false}, foreColor: textColor},
-          colors: [color], xaxis: {categories:cats}, plotOptions: {bar: {borderRadius:4}},
-          tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' }
-       });
-       chartInst[id].render();
-    }
-
-    function renderBarGroup(id, series, cats, isEnergy, textColor, colors) {
-       if(chartInst[id]) chartInst[id].destroy();
-       
-       chartInst[id] = new ApexCharts(document.querySelector("#"+id), {
-          series: series, chart: {type:'bar', height:300, toolbar:{show:false}, foreColor: textColor}, 
-          xaxis: {categories:cats}, 
-          colors: colors,
-          plotOptions: {bar: {borderRadius:4, columnWidth: '60%'}},
-          dataLabels: {enabled:false}, 
-          yaxis: { labels: { formatter: (val) => isEnergy ? val.toFixed(2) : val.toLocaleString() } },
-          tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' }
-       });
-       chartInst[id].render();
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="./assets/js/argon-dashboard.min.js?v=2.0.4"></script>
 </body>
+
 </html>
